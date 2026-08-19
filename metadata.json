@@ -1,5 +1,5 @@
 {
-  "name": "Dog Bone Jump Game",
+  "name": "Bone Collector",
   "description": "A delightful and responsive dog jumping game where players tap to guide their dog to catch flying bones across mobile, tablet, and desktop screens.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

@@ -117,7 +117,7 @@ export function StartScreen({
           {/* Title & Tagline */}
           <div className="space-y-0.5 sm:space-y-1">
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-black text-green-900 tracking-tighter leading-none">
-              DOG BONE<br />JUMP
+              BONE<br />COLLECTOR
             </h1>
             <p className="text-xs sm:text-sm md:text-base text-green-700 font-medium opacity-90">
               Jump to catch the flying bones!
