@@ -1,33 +1,25 @@
 /**
- * Audio manager handling both /audio/*.mp3 file playback and Web Audio API synthesized fallbacks
- * for background music loops and game sound effects.
+ * Web Audio API synthesizer for playful background music and sound effects.
+ * Eliminates external MP3 network requests and ensures zero-latency, reliable audio.
  */
 
 class AudioManager {
   private ctx: AudioContext | null = null;
-  private bgmAudioElement: HTMLAudioElement | null = null;
   private isBgmPlaying: boolean = false;
   private isMuted: boolean = false;
-  private synthBgmInterval: number | null = null;
+  private synthBgmTimeout: number | null = null;
   private synthNoteIndex: number = 0;
 
   constructor() {
-    // Attempt to set up html5 audio for /audio/bgm.mp3 if present
-    if (typeof window !== 'undefined') {
-      try {
-        this.bgmAudioElement = new Audio('/audio/bgm.mp3');
-        this.bgmAudioElement.loop = true;
-        this.bgmAudioElement.volume = 0.4;
-      } catch {
-        // Fall back to Web Audio synth
-      }
-    }
+    // AudioContext will initialize lazily on user gesture
   }
 
   private getAudioContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
     if (!this.ctx) {
-      const AudioCtxClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioCtxClass =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (AudioCtxClass) {
         this.ctx = new AudioCtxClass();
       }
@@ -40,12 +32,9 @@ class AudioManager {
 
   public setMuted(muted: boolean) {
     this.isMuted = muted;
-    if (this.bgmAudioElement) {
-      this.bgmAudioElement.muted = muted;
-    }
-    if (muted && this.synthBgmInterval) {
+    if (muted && this.synthBgmTimeout !== null) {
       this.stopSynthBgm();
-    } else if (!muted && this.isBgmPlaying && !this.synthBgmInterval) {
+    } else if (!muted && this.isBgmPlaying && this.synthBgmTimeout === null) {
       this.startSynthBgm();
     }
   }
@@ -57,40 +46,18 @@ class AudioManager {
   public startBGM() {
     if (this.isBgmPlaying) return;
     this.isBgmPlaying = true;
-
-    // First try playing /audio/bgm.mp3
-    if (this.bgmAudioElement && !this.isMuted) {
-      const playPromise = this.bgmAudioElement.play();
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Successfully playing mp3
-          })
-          .catch(() => {
-            // If mp3 fails to load or 404s, seamlessly switch to synthesized playful marimba background loop
-            this.startSynthBgm();
-          });
-      } else {
-        this.startSynthBgm();
-      }
-    } else {
+    if (!this.isMuted) {
       this.startSynthBgm();
     }
   }
 
   public stopBGM() {
     this.isBgmPlaying = false;
-    if (this.bgmAudioElement) {
-      try {
-        this.bgmAudioElement.pause();
-        this.bgmAudioElement.currentTime = 0;
-      } catch {}
-    }
     this.stopSynthBgm();
   }
 
   private startSynthBgm() {
-    if (this.synthBgmInterval !== null || this.isMuted) return;
+    if (this.synthBgmTimeout !== null || this.isMuted) return;
     const ctx = this.getAudioContext();
     if (!ctx) return;
 
@@ -117,87 +84,74 @@ class AudioManager {
     this.synthNoteIndex = 0;
 
     const playNextNote = () => {
-      if (!this.isBgmPlaying || this.isMuted) return;
-      const ctx = this.getAudioContext();
-      if (!ctx) return;
+      if (!this.isBgmPlaying || this.isMuted) {
+        this.synthBgmTimeout = null;
+        return;
+      }
+      const audioCtx = this.getAudioContext();
+      if (!audioCtx) {
+        this.synthBgmTimeout = null;
+        return;
+      }
 
       const item = melody[this.synthNoteIndex % melody.length];
       this.synthNoteIndex++;
 
       if (item.note > 0) {
         try {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(item.note, ctx.currentTime);
+          osc.frequency.setValueAtTime(item.note, audioCtx.currentTime);
 
-          gain.gain.setValueAtTime(0.04, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + item.dur);
+          gain.gain.setValueAtTime(0.035, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + item.dur);
 
           osc.connect(gain);
-          gain.connect(ctx.destination);
+          gain.connect(audioCtx.destination);
 
           osc.start();
-          osc.stop(ctx.currentTime + item.dur);
+          osc.stop(audioCtx.currentTime + item.dur);
 
           // Subtle soft bass pulse on every 4th note
           if (this.synthNoteIndex % 4 === 1) {
-            const bass = ctx.createOscillator();
-            const bassGain = ctx.createGain();
+            const bass = audioCtx.createOscillator();
+            const bassGain = audioCtx.createGain();
             bass.type = 'sine';
-            bass.frequency.setValueAtTime(item.note / 2, ctx.currentTime);
-            bassGain.gain.setValueAtTime(0.05, ctx.currentTime);
-            bassGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+            bass.frequency.setValueAtTime(item.note / 2, audioCtx.currentTime);
+            bassGain.gain.setValueAtTime(0.045, audioCtx.currentTime);
+            bassGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.3);
             bass.connect(bassGain);
-            bassGain.connect(ctx.destination);
+            bassGain.connect(audioCtx.destination);
             bass.start();
-            bass.stop(ctx.currentTime + 0.3);
+            bass.stop(audioCtx.currentTime + 0.3);
           }
         } catch {}
       }
 
-      this.synthBgmInterval = window.setTimeout(playNextNote, item.dur * 1000);
+      this.synthBgmTimeout = window.setTimeout(playNextNote, item.dur * 1000);
     };
 
     playNextNote();
   }
 
   private stopSynthBgm() {
-    if (this.synthBgmInterval !== null) {
-      clearTimeout(this.synthBgmInterval);
-      this.synthBgmInterval = null;
+    if (this.synthBgmTimeout !== null) {
+      clearTimeout(this.synthBgmTimeout);
+      this.synthBgmTimeout = null;
     }
   }
 
   // Sound effect for bone collection (sparkly ding + happy crunch)
   public playBoneCollectSound() {
     if (this.isMuted) return;
-
-    // Try playing mp3 if available
-    try {
-      const audio = new Audio('/audio/collect.mp3');
-      audio.volume = 0.6;
-      audio.play().catch(() => {
-        this.synthesizeCollectSound();
-      });
-    } catch {
-      this.synthesizeCollectSound();
-    }
+    this.synthesizeCollectSound();
   }
 
   // Sound effect for +1 Achievement unlocked (every 10 bones)
   public playAchievementSound() {
     if (this.isMuted) return;
-
-    try {
-      const audio = new Audio('/audio/achievement.mp3');
-      audio.volume = 0.7;
-      audio.play().catch(() => {
-        this.synthesizeAchievementFanfare();
-      });
-    } catch {
-      this.synthesizeAchievementFanfare();
-    }
+    this.synthesizeAchievementFanfare();
   }
 
   // Sound effect for bone flying past / whoosh
@@ -227,31 +181,13 @@ class AudioManager {
   // Sound effect for jumping
   public playJumpSound() {
     if (this.isMuted) return;
-
-    try {
-      const audio = new Audio('/audio/jump.mp3');
-      audio.volume = 0.5;
-      audio.play().catch(() => {
-        this.synthesizeJumpSound();
-      });
-    } catch {
-      this.synthesizeJumpSound();
-    }
+    this.synthesizeJumpSound();
   }
 
   // Sound effect for dog bark
   public playBarkSound() {
     if (this.isMuted) return;
-
-    try {
-      const audio = new Audio('/audio/bark.mp3');
-      audio.volume = 0.6;
-      audio.play().catch(() => {
-        this.synthesizeBarkSound();
-      });
-    } catch {
-      this.synthesizeBarkSound();
-    }
+    this.synthesizeBarkSound();
   }
 
   // Sound effect for UI clicks / buttons
