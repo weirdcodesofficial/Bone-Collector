@@ -611,16 +611,16 @@ export function DogGameCanvas({
   const renderBoneStackEmojis = () => {
     if (boneStack === 0) {
       return (
-        <div className="flex items-center gap-2 py-0.5">
-          <span className="text-green-900/60 text-xs sm:text-sm font-bold">
+        <div className="flex items-center gap-1.5 sm:gap-2 py-0.5 flex-wrap">
+          <span className="text-green-900/70 text-[11px] sm:text-xs md:text-sm font-bold">
             {totalBones === 0
-              ? 'Click / tap anywhere in the sky to jump & catch the flying bone!'
-              : '🎯 Stack reset! Catch 10 bones for next achievement!'}
+              ? 'Tap anywhere to jump & catch bones!'
+              : '🎯 Stack reset! Catch 10 bones for next trophy!'}
           </span>
           {/* 10 Empty slot indicators */}
-          <div className="flex gap-1 opacity-30">
+          <div className="flex gap-0.5 sm:gap-1 opacity-30">
             {Array.from({ length: BONES_PER_ACHIEVEMENT }).map((_, i) => (
-              <span key={`empty-initial-slot-${i}`} className="text-sm">⚪</span>
+              <span key={`empty-initial-slot-${i}`} className="text-xs sm:text-sm">⚪</span>
             ))}
           </div>
         </div>
@@ -630,20 +630,20 @@ export function DogGameCanvas({
     const bones = Array.from({ length: boneStack });
 
     return (
-      <div className="flex items-center flex-wrap gap-1.5 sm:gap-2">
+      <div className="flex items-center flex-wrap gap-1 sm:gap-2">
         {bones.map((_, i) => (
           <span
             key={`filled-bone-icon-${i}`}
-            className="text-2xl sm:text-3xl md:text-4xl drop-shadow-sm transform hover:scale-125 transition-transform"
+            className="text-xl sm:text-2xl md:text-3xl drop-shadow-sm transform hover:scale-125 transition-transform"
           >
             🦴
           </span>
         ))}
         {/* Remaining slots dots */}
         {boneStack < BONES_PER_ACHIEVEMENT && (
-          <div className="flex items-center gap-1 ml-1 opacity-25">
+          <div className="flex items-center gap-0.5 sm:gap-1 ml-0.5 opacity-25">
             {Array.from({ length: BONES_PER_ACHIEVEMENT - boneStack }).map((_, i) => (
-              <span key={`unfilled-remaining-slot-${i}`} className="text-base select-none">⚪</span>
+              <span key={`unfilled-remaining-slot-${i}`} className="text-xs sm:text-sm select-none">⚪</span>
             ))}
           </div>
         )}
@@ -682,13 +682,10 @@ export function DogGameCanvas({
       {/* Geometric Dot Grid Pattern */}
       <div className="absolute inset-0 opacity-10 pointer-events-none geometric-dot-bg" />
 
-      {/* 1920x1080 Scaled Viewport Container (16:9 Aspect Ratio) */}
+      {/* Responsive Viewport Container */}
       <div
         id="game-world"
         className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{
-          aspectRatio: '16 / 9',
-        }}
       >
         {/* Geometric Balance Lane Guidelines */}
         <div className="absolute inset-y-0 left-[20%] right-[20%] border-x-4 border-dashed border-green-800/15 pointer-events-none" />
@@ -720,13 +717,13 @@ export function DogGameCanvas({
         >
           {/* Jump Area Indicator Bar */}
           <div className="w-full h-full flex items-center justify-center">
-            <div className="bg-black/10 px-6 py-1.5 rounded-full text-xs font-black text-green-950/60 uppercase tracking-widest shadow-xs">
+            <div className="bg-black/10 px-4 sm:px-6 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-black text-green-950/60 uppercase tracking-widest shadow-xs">
               Grass Ground • Tap anywhere to leap
             </div>
           </div>
         </div>
 
-        {/* Flying Bone Target (Requirement: Bone flies across screen based on dog position; if dog misses, it doesn't count) */}
+        {/* Flying Bone Target */}
         {bonePos.visible && (
           <>
             {/* Flying Bone Ground Shadow for depth perception */}
@@ -771,7 +768,7 @@ export function DogGameCanvas({
                 <div className="absolute -inset-2 bg-yellow-300/40 rounded-full blur-xs pointer-events-none" />
 
                 {/* Bone Emoji */}
-                <div className="text-7xl sm:text-8xl md:text-9xl drop-shadow-[0_12px_14px_rgba(0,0,0,0.25)] select-none">
+                <div className="text-6xl sm:text-8xl md:text-9xl drop-shadow-[0_12px_14px_rgba(0,0,0,0.25)] select-none">
                   🦴
                 </div>
               </div>
@@ -779,7 +776,7 @@ export function DogGameCanvas({
           </>
         )}
 
-        {/* Dynamic Dog Shadow: Always directly beneath dog on the ground plane, sizing and opacity update with dog position */}
+        {/* Dynamic Dog Shadow: Always directly beneath dog on the ground plane */}
         <div
           id="dog-shadow"
           className="absolute z-10 pointer-events-none"
@@ -810,7 +807,7 @@ export function DogGameCanvas({
           <div className="relative flex flex-col items-center justify-center">
             {/* Bark Speech Bubble with dog-specific bark text */}
             {dogPos.barking && (
-              <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-white text-green-950 font-black text-sm px-4 py-1.5 rounded-full shadow-lg border-2 border-[#8BC34A] whitespace-nowrap animate-bounce z-40">
+              <div className="absolute -top-12 sm:-top-14 left-1/2 -translate-x-1/2 bg-white text-green-950 font-black text-xs sm:text-sm px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-lg border-2 border-[#8BC34A] whitespace-nowrap animate-bounce z-40">
                 {currentDogAvatar.barkSound}
               </div>
             )}
@@ -818,7 +815,7 @@ export function DogGameCanvas({
             {/* Dog Avatar Full Body Image - centered and grounded */}
             <div
               key={currentDogAvatar.id}
-              className={`w-44 h-36 sm:w-52 sm:h-40 md:w-60 md:h-44 flex items-center justify-center drop-shadow-2xl transition-transform duration-200 ${
+              className={`w-36 h-30 sm:w-52 sm:h-40 md:w-60 md:h-44 flex items-center justify-center drop-shadow-2xl transition-transform duration-200 ${
                 dogPos.isJumping ? 'scale-105' : 'hover:scale-105 animate-in zoom-in-90'
               }`}
             >
@@ -853,7 +850,7 @@ export function DogGameCanvas({
         {floatingTexts.map((t) => (
           <div
             key={t.id}
-            className="absolute z-40 pointer-events-none font-black text-green-950 bg-white border-2 border-[#8BC34A] px-4 py-1.5 rounded-2xl shadow-lg whitespace-nowrap select-none text-base sm:text-lg"
+            className="absolute z-40 pointer-events-none font-black text-green-950 bg-white border-2 border-[#8BC34A] px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-lg whitespace-nowrap select-none text-sm sm:text-base"
             style={{
               left: `${(t.x / GAME_WIDTH) * 100}%`,
               top: `${(t.y / GAME_HEIGHT) * 100}%`,
@@ -867,44 +864,44 @@ export function DogGameCanvas({
 
         {/* +1 Achievement Unlocked Banner with Full Body Dog Image */}
         {achievementBanner && (
-          <div className="absolute top-1/4 inset-x-4 sm:inset-x-8 z-50 pointer-events-none flex flex-col items-center animate-bounce">
-            <div className="px-6 sm:px-10 py-6 bg-[#2E7D32] text-white font-black rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] border-4 border-yellow-300 flex flex-col items-center gap-4 text-center max-w-xl w-full">
-              <div className="flex items-center gap-3">
-                <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300 fill-yellow-300 animate-spin" />
-                <span className="text-yellow-300 text-base sm:text-2xl uppercase tracking-widest font-black">
+          <div className="absolute top-16 sm:top-20 inset-x-2 sm:inset-x-8 z-50 pointer-events-none flex flex-col items-center animate-bounce">
+            <div className="px-4 sm:px-8 py-4 sm:py-6 bg-[#2E7D32] text-white font-black rounded-3xl sm:rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.4)] border-3 sm:border-4 border-yellow-300 flex flex-col items-center gap-3 sm:gap-4 text-center max-w-sm sm:max-w-xl w-full">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300 fill-yellow-300 animate-spin" />
+                <span className="text-yellow-300 text-sm sm:text-xl uppercase tracking-widest font-black">
                   Stack 10/10 Completed!
                 </span>
-                <Trophy className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-300 fill-yellow-300 animate-spin" />
+                <Trophy className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-300 fill-yellow-300 animate-spin" />
               </div>
 
-              <div className="text-lg sm:text-2xl font-black">{achievementBanner.text}</div>
+              <div className="text-base sm:text-2xl font-black">{achievementBanner.text}</div>
 
               {/* Requirement: "dog avatar at new achievement must be a full body dog image." */}
               {achievementBanner.dogBreed && (
-                <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/95 text-green-950 px-6 py-4 rounded-3xl border-4 border-yellow-300 shadow-2xl w-full max-w-md">
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 bg-white/95 text-green-950 p-3 sm:px-6 sm:py-4 rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-yellow-300 shadow-xl w-full max-w-md">
                   {/* Full Body Dog Image Container */}
-                  <div className="w-36 h-28 sm:w-40 sm:h-32 bg-green-50 rounded-2xl flex items-center justify-center p-2 border-2 border-green-200 shadow-inner shrink-0 relative overflow-hidden">
+                  <div className="w-28 h-22 sm:w-36 sm:h-28 bg-green-50 rounded-xl sm:rounded-2xl flex items-center justify-center p-1.5 border border-green-200 shadow-inner shrink-0 relative overflow-hidden">
                     <div className="absolute -inset-2 bg-yellow-200/30 rounded-full blur-sm" />
                     <FullBodyDogImage
                       avatarId={achievementBanner.dogAvatarId}
-                      size={135}
+                      size={110}
                       animated
                     />
                   </div>
 
                   <div className="text-center sm:text-left flex-1">
-                    <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs uppercase tracking-wider font-extrabold text-amber-700">
+                    <div className="flex items-center justify-center sm:justify-start gap-1 text-[10px] sm:text-xs uppercase tracking-wider font-extrabold text-amber-700">
                       <span>🎉</span>
                       <span>Full Body Dog Unlocked!</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-black text-green-950 leading-tight mt-0.5">
+                    <div className="text-lg sm:text-2xl font-black text-green-950 leading-tight mt-0.5">
                       {achievementBanner.dogName && <span className="text-green-800">{achievementBanner.dogName} the </span>}
                       {achievementBanner.dogBreed}
                     </div>
-                    <div className="text-xs text-green-800 font-bold mt-1 flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                    <div className="text-xs text-green-800 font-bold mt-0.5 flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
                       <span>{achievementBanner.dogTitle}</span>
                       {achievementBanner.collectionCount && (
-                        <span className="bg-yellow-400 text-yellow-950 px-2.5 py-0.5 rounded-full font-black text-[10px] shadow-xs">
+                        <span className="bg-yellow-400 text-yellow-950 px-2 py-0.5 rounded-full font-black text-[9px] sm:text-[10px] shadow-xs">
                           Breed #{achievementBanner.collectionCount}/{achievementBanner.totalBreeds}
                         </span>
                       )}
@@ -913,7 +910,7 @@ export function DogGameCanvas({
                 </div>
               )}
 
-              <div className="text-green-100 text-xs sm:text-sm font-semibold">
+              <div className="text-green-100 text-[11px] sm:text-sm font-semibold">
                 Bone stack reset! Catch next 10 bones for Trophy #{achievementBanner.level + 1}
               </div>
             </div>
@@ -922,60 +919,60 @@ export function DogGameCanvas({
       </div>
 
       {/* Top HUD Overlay (Score at Top-Left & Controls at Top-Right) */}
-      <header className="relative z-50 flex items-start justify-between w-full p-4 sm:p-6 md:p-8 pointer-events-auto">
-        {/* Requirement 6 & 7: Score at top-left with bone emoji stack + Achievements + Active Dog Breed */}
+      <header className="relative z-50 flex items-start justify-between w-full p-2.5 sm:p-4 md:p-6 pointer-events-auto">
+        {/* Score at top-left with bone emoji stack + Achievements + Active Dog Breed */}
         <div
           id="game-score-display"
-          className="bg-white/95 backdrop-blur-md rounded-2xl px-5 sm:px-6 py-3.5 sm:py-4 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-b-4 border-green-700/20 flex flex-col items-start gap-2 max-w-xl"
+          className="bg-white/95 backdrop-blur-md rounded-xl sm:rounded-2xl px-3 sm:px-5 py-2 sm:py-3.5 shadow-md sm:shadow-[0_8px_30px_rgb(0,0,0,0.12)] border-b-2 sm:border-b-4 border-green-700/20 flex flex-col items-start gap-1.5 max-w-[72vw] sm:max-w-xl"
         >
           {/* Stack & Achievement & Dog Breed Meta Bar */}
-          <div className="flex flex-wrap items-center justify-between w-full gap-2 sm:gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-green-800">
-                Bone Stack ({boneStack}/{BONES_PER_ACHIEVEMENT})
+          <div className="flex flex-wrap items-center justify-between w-full gap-1.5 sm:gap-3">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[9px] sm:text-xs font-black uppercase tracking-wider text-green-800">
+                Stack ({boneStack}/{BONES_PER_ACHIEVEMENT})
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               {/* Active Dog Avatar Badge */}
               <div
                 id="active-dog-badge"
-                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border shadow-xs ${currentDogAvatar.badgeBg}`}
-                title={`Active Dog: ${currentDogAvatar.name} the ${currentDogAvatar.breed} (${currentDogAvatar.title})`}
+                className={`flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-black border shadow-xs ${currentDogAvatar.badgeBg}`}
+                title={`Active Dog: ${currentDogAvatar.name} the ${currentDogAvatar.breed}`}
               >
-                <div className="w-6 h-5 flex items-center justify-center overflow-hidden">
-                  <FullBodyDogImage avatarId={currentDogAvatar.id} size={28} />
+                <div className="w-5 h-4 sm:w-6 sm:h-5 flex items-center justify-center overflow-hidden">
+                  <FullBodyDogImage avatarId={currentDogAvatar.id} size={24} />
                 </div>
-                <span>{currentDogAvatar.breed}</span>
+                <span className="truncate max-w-[80px] sm:max-w-none">{currentDogAvatar.breed}</span>
               </div>
 
               {/* Achievements Counter Badge */}
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-100/80 border border-amber-300 rounded-full text-amber-900 shadow-xs">
-                <Trophy className="w-3.5 h-3.5 text-amber-600 fill-amber-500" />
-                <span className="text-xs font-black">
-                  {currentAchievements} {currentAchievements === 1 ? 'Achievement' : 'Achievements'}
+              <div className="flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 bg-amber-100/80 border border-amber-300 rounded-full text-amber-900 shadow-xs">
+                <Trophy className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-600 fill-amber-500" />
+                <span className="text-[10px] sm:text-xs font-black">
+                  {currentAchievements}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Bone Emoji Tray (Requirement 7) */}
+          {/* Bone Emoji Tray */}
           <div id="bone-emoji-tray" className="w-full">
             {renderBoneStackEmojis()}
           </div>
 
           {/* Total Bones Subtitle */}
-          <div className="text-[10px] text-green-800/70 font-bold tracking-wide">
-            Total Bones Caught: <span className="text-green-950 font-black">{totalBones}</span>
+          <div className="text-[9px] sm:text-[10px] text-green-800/70 font-bold tracking-wide">
+            Total Caught: <span className="text-green-950 font-black">{totalBones}</span>
           </div>
         </div>
 
         {/* Top-Right Controls */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {/* Sound Toggle */}
           <SoundToggle id="gameplay-sound-toggle" />
 
-          {/* Requirement 10: Exit Button on top right corner */}
+          {/* Exit Button */}
           <button
             id="gameplay-exit-btn"
             type="button"
@@ -984,14 +981,14 @@ export function DogGameCanvas({
               audioManager.playClickSound();
               setShowExitModal(true);
             }}
-            className="group flex items-center gap-3 bg-white/95 backdrop-blur-md px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl shadow-lg border-b-4 border-red-700/20 active:translate-y-1 active:border-b-0 transition-all cursor-pointer"
+            className="group flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 sm:px-5 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border-b-2 sm:border-b-4 border-red-700/20 active:translate-y-0.5 sm:active:translate-y-1 active:border-b-0 transition-all cursor-pointer min-h-[40px]"
             title="Exit Game"
             aria-label="Exit Game"
           >
-            <span className="text-sm font-black text-red-600 uppercase tracking-widest">
-              Exit Game
+            <span className="hidden sm:inline text-xs sm:text-sm font-black text-red-600 uppercase tracking-widest">
+              Exit
             </span>
-            <div className="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-xs">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 bg-red-500 rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm shadow-xs">
               ✕
             </div>
           </button>
