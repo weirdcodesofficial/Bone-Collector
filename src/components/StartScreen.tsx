@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import { Play, Trophy, Sparkles, X } from 'lucide-react';
+import { Play, Trophy, X, Compass, User } from 'lucide-react';
 import { audioManager } from '../utils/audio';
 import { SoundToggle } from './SoundToggle';
 import { ExitModal } from './ExitModal';
+import { HighScoreMapModal } from './HighScoreMapModal';
 import { DogAvatar, DEFAULT_DOG_AVATAR } from '../data/dogAvatars';
 import { FullBodyDogImage } from './FullBodyDogImage';
+import { getUserCustomProfile } from '../data/mapPlayers';
 
 interface StartScreenProps {
   highScore: number;
@@ -20,10 +22,19 @@ export function StartScreen({
   onStartGame,
 }: StartScreenProps) {
   const [showExitModal, setShowExitModal] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapInitialTab, setMapInitialTab] = useState<'map' | 'leaderboard' | 'profile'>('map');
+  const userProfile = getUserCustomProfile();
 
   const handleStart = () => {
     audioManager.playBarkSound();
     onStartGame();
+  };
+
+  const openMapWithTab = (tab: 'map' | 'leaderboard' | 'profile') => {
+    audioManager.playClickSound();
+    setMapInitialTab(tab);
+    setShowMapModal(true);
   };
 
   return (
@@ -39,7 +50,7 @@ export function StartScreen({
       {/* Top Header Bar */}
       <header className="relative z-20 flex items-center justify-between w-full pt-1 sm:pt-2">
         {/* High Score & Achievements Badge */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
           <div
             id="start-screen-high-score-badge"
             className="flex items-center gap-1.5 sm:gap-2.5 px-2.5 sm:px-4 py-1.5 sm:py-2 bg-white/15 backdrop-blur-md rounded-full border border-white/30 text-white shadow-sm"
@@ -52,6 +63,41 @@ export function StartScreen({
               </div>
             </div>
           </div>
+
+          {/* Player Profile Badge */}
+          <button
+            id="start-header-profile-btn"
+            type="button"
+            onClick={() => openMapWithTab('profile')}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-white/20 hover:bg-white/30 active:scale-95 backdrop-blur-md rounded-full border border-white/30 text-white shadow-sm transition-all cursor-pointer"
+            title="Player Profile Settings"
+          >
+            {userProfile.avatarUrl ? (
+              <img
+                src={userProfile.avatarUrl}
+                alt={userProfile.name}
+                className="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover border border-white/60 shrink-0"
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
+            )}
+            <span className="text-[10px] sm:text-xs font-black truncate max-w-[80px] sm:max-w-[120px]">
+              {userProfile.name}
+            </span>
+          </button>
+
+          {/* Quick Map Button in Header */}
+          <button
+            id="start-header-map-btn"
+            type="button"
+            onClick={() => openMapWithTab('map')}
+            className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-white/20 hover:bg-white/30 active:scale-95 backdrop-blur-md rounded-full border border-white/30 text-white shadow-sm transition-all cursor-pointer"
+            title="Open High Score Map"
+          >
+            <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-300 animate-pulse" />
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider">Map</span>
+          </button>
 
           {achievements > 0 && (
             <div
@@ -96,16 +142,16 @@ export function StartScreen({
       <main className="relative z-20 flex-1 flex flex-col items-center justify-center my-auto w-full px-2 py-3 sm:py-6">
         <div
           id="start-hero-card"
-          className="bg-white p-5 sm:p-8 md:p-10 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] text-center border-[6px] sm:border-[10px] md:border-[12px] border-[#8BC34A] flex flex-col items-center gap-3.5 sm:gap-5 max-w-xs sm:max-w-md w-full animate-scale-up"
+          className="bg-white p-5 sm:p-7 md:p-9 rounded-[2.5rem] sm:rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] text-center border-[6px] sm:border-[10px] md:border-[12px] border-[#8BC34A] flex flex-col items-center gap-3 sm:gap-4 max-w-xs sm:max-w-md w-full animate-scale-up"
         >
           {/* Full Body Dog Mascot Avatar Showcase */}
           <div className="flex flex-col items-center gap-1.5 sm:gap-2">
             <div
-              className="w-32 h-26 sm:w-44 sm:h-32 bg-green-100 rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner border-3 sm:border-4 border-green-200 cursor-pointer hover:scale-105 transition-transform"
+              className="w-28 h-24 sm:w-40 sm:h-28 bg-green-100 rounded-2xl sm:rounded-3xl flex items-center justify-center p-2 shadow-inner border-3 sm:border-4 border-green-200 cursor-pointer hover:scale-105 transition-transform"
               onClick={() => audioManager.playBarkSound()}
               title={`Tap ${dogAvatar.name} to bark!`}
             >
-              <FullBodyDogImage avatarId={dogAvatar.id} size={130} animated />
+              <FullBodyDogImage avatarId={dogAvatar.id} size={120} animated />
             </div>
 
             {/* Saved Dog Avatar Badge with Dog Name */}
@@ -131,10 +177,24 @@ export function StartScreen({
               id="start-game-btn"
               type="button"
               onClick={handleStart}
-              className="w-full bg-[#8BC34A] hover:bg-[#7CB342] text-white py-3.5 sm:py-5 rounded-2xl sm:rounded-3xl text-lg sm:text-2xl md:text-3xl font-black shadow-[0_6px_0_rgb(104,159,56)] sm:shadow-[0_8px_0_rgb(104,159,56)] active:shadow-none active:translate-y-1.5 transition-all tracking-tight cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3"
+              className="w-full bg-[#8BC34A] hover:bg-[#7CB342] text-white py-3.5 sm:py-4.5 rounded-2xl sm:rounded-3xl text-lg sm:text-2xl md:text-3xl font-black shadow-[0_6px_0_rgb(104,159,56)] sm:shadow-[0_8px_0_rgb(104,159,56)] active:shadow-none active:translate-y-1.5 transition-all tracking-tight cursor-pointer flex items-center justify-center gap-2.5 sm:gap-3"
             >
               <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-current" />
               START GAME
+            </button>
+
+            {/* High Score Map Button */}
+            <button
+              id="start-open-map-btn"
+              type="button"
+              onClick={() => {
+                audioManager.playClickSound();
+                setShowMapModal(true);
+              }}
+              className="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white py-2.5 sm:py-3.5 px-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base font-black shadow-[0_4px_0_rgb(6,95,70)] active:shadow-none active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-300" />
+              <span>🗺️ High Score Map & Standings</span>
             </button>
 
             <div className="flex items-center justify-center gap-1 text-[10px] sm:text-xs font-bold text-green-800/60 uppercase tracking-widest pt-0.5">
@@ -152,6 +212,16 @@ export function StartScreen({
         </div>
       </footer>
 
+      {/* High Score Adventure Map Modal */}
+      <HighScoreMapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        userHighScore={highScore}
+        userAchievements={achievements}
+        currentDogAvatar={dogAvatar}
+        initialTab={mapInitialTab}
+      />
+
       {/* Exit Modal for Start Screen */}
       <ExitModal
         score={0}
@@ -168,3 +238,4 @@ export function StartScreen({
     </div>
   );
 }
+

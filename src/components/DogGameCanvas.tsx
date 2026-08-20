@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback, type MouseEvent, type TouchEvent } from 'react';
-import { Trophy, Sparkles, X, Heart } from 'lucide-react';
+import { Trophy, Sparkles, X, Heart, Compass } from 'lucide-react';
 import { audioManager } from '../utils/audio';
 import { Particle, FloatingText } from '../types';
 import { ExitModal } from './ExitModal';
 import { SoundToggle } from './SoundToggle';
+import { HighScoreMapModal } from './HighScoreMapModal';
 import { DOG_AVATARS, DogAvatar, getNextUniqueDogAvatar } from '../data/dogAvatars';
 import { FullBodyDogImage } from './FullBodyDogImage';
 
@@ -78,6 +79,7 @@ export function DogGameCanvas({
   });
 
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
+  const [showMapModal, setShowMapModal] = useState<boolean>(false);
   const [achievementBanner, setAchievementBanner] = useState<{
     id: number;
     level: number;
@@ -274,8 +276,18 @@ export function DogGameCanvas({
   };
 
   // Trigger jump: Leaps from ground up to target, then lands cleanly back on ground at targetX
+  // User constraint: "jump should not wrork until the dog is on the ground once again"
   const jumpToTarget = useCallback(
     (targetX: number, targetY: number) => {
+      // STRICT GROUND CHECK: Dog must be fully landed on the ground before another jump can execute
+      if (
+        jumpRef.current.active ||
+        dogRef.current.isJumping ||
+        dogRef.current.y < GROUND_Y - 2
+      ) {
+        return;
+      }
+
       audioManager.playJumpSound();
 
       const startX = dogRef.current.x;
@@ -298,6 +310,7 @@ export function DogGameCanvas({
         landY: GROUND_Y,
       };
 
+      dogRef.current.isJumping = true;
       setDogPos((prev) => ({
         ...prev,
         isJumping: true,
@@ -335,6 +348,11 @@ export function DogGameCanvas({
     const targetX = Math.max(140, Math.min(GAME_WIDTH - 140, normX * GAME_WIDTH));
     const targetY = Math.max(160, Math.min(GROUND_Y - 40, normY * GAME_HEIGHT));
 
+    // If dog is currently in the air, ignore jump input until landed
+    if (jumpRef.current.active || dogRef.current.isJumping || dogRef.current.y < GROUND_Y - 2) {
+      return;
+    }
+
     // Spawn animated tap ripple indicator at target
     const rippleId = getUniqueRippleId();
     setTapRipples((prev) => [...prev.slice(-6), { id: rippleId, x: targetX, y: targetY }]);
@@ -344,6 +362,23 @@ export function DogGameCanvas({
 
     jumpToTarget(targetX, targetY);
   };
+
+  // Keyboard space / up arrow jump support (also strictly grounded)
+  useEffect(() => {
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (showExitModal || showMapModal) return;
+      if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'KeyW') {
+        e.preventDefault();
+        // Target current flying bone position or center high
+        const targetX = boneRef.current.visible ? boneRef.current.x : dogRef.current.x;
+        const targetY = boneRef.current.visible ? Math.max(180, boneRef.current.y) : 380;
+        jumpToTarget(targetX, targetY);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showExitModal, showMapModal, jumpToTarget]);
 
   // Main Game Loop
   useEffect(() => {
@@ -386,6 +421,9 @@ export function DogGameCanvas({
         // Clamp so dog never sinks below GROUND_Y
         currentDogY = Math.min(GROUND_Y, currentDogY);
 
+        dogRef.current.x = currentDogX;
+        dogRef.current.y = currentDogY;
+
         setDogPos((prev) => ({
           ...prev,
           x: currentDogX,
@@ -395,6 +433,9 @@ export function DogGameCanvas({
 
         if (progress >= 1) {
           jumpRef.current.active = false;
+          dogRef.current.x = jumpRef.current.landX;
+          dogRef.current.y = GROUND_Y;
+          dogRef.current.isJumping = false;
           setDogPos((prev) => ({
             ...prev,
             x: jumpRef.current.landX,
@@ -968,7 +1009,26 @@ export function DogGameCanvas({
         </div>
 
         {/* Top-Right Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* Quick Map Button */}
+          <button
+            id="gameplay-map-btn"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              audioManager.playClickSound();
+              setShowMapModal(true);
+            }}
+            className="flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-2.5 sm:px-4 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border-b-2 sm:border-b-4 border-emerald-700/20 active:translate-y-0.5 sm:active:translate-y-1 active:border-b-0 transition-all cursor-pointer min-h-[40px]"
+            title="Open High Score Map"
+            aria-label="Open High Score Map"
+          >
+            <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 animate-pulse" />
+            <span className="hidden sm:inline text-xs sm:text-sm font-black text-emerald-700 uppercase tracking-widest">
+              Map
+            </span>
+          </button>
+
           {/* Sound Toggle */}
           <SoundToggle id="gameplay-sound-toggle" />
 
@@ -994,6 +1054,15 @@ export function DogGameCanvas({
           </button>
         </div>
       </header>
+
+      {/* High Score Adventure Map Modal */}
+      <HighScoreMapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        userHighScore={Math.max(highScore, totalBones)}
+        userAchievements={currentAchievements}
+        currentDogAvatar={currentDogAvatar}
+      />
 
       {/* Exit / Pause Modal */}
       <ExitModal
