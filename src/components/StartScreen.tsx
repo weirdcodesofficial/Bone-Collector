@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Play, Trophy, X, Compass, User } from 'lucide-react';
+import { Play, Trophy, X, Compass, User, Sparkles } from 'lucide-react';
 import { audioManager } from '../utils/audio';
 import { SoundToggle } from './SoundToggle';
 import { ExitModal } from './ExitModal';
 import { HighScoreMapModal } from './HighScoreMapModal';
+import { DogAiStudioModal } from './DogAiStudioModal';
 import { DogAvatar, DEFAULT_DOG_AVATAR } from '../data/dogAvatars';
 import { FullBodyDogImage } from './FullBodyDogImage';
 import { getUserCustomProfile } from '../data/mapPlayers';
@@ -13,6 +14,7 @@ interface StartScreenProps {
   achievements?: number;
   dogAvatar?: DogAvatar;
   onStartGame: () => void;
+  onSelectDogAvatar?: (avatar: DogAvatar) => void;
 }
 
 export function StartScreen({
@@ -20,9 +22,11 @@ export function StartScreen({
   achievements = 0,
   dogAvatar = DEFAULT_DOG_AVATAR,
   onStartGame,
+  onSelectDogAvatar,
 }: StartScreenProps) {
   const [showExitModal, setShowExitModal] = useState(false);
   const [showMapModal, setShowMapModal] = useState(false);
+  const [showAiStudioModal, setShowAiStudioModal] = useState(false);
   const [mapInitialTab, setMapInitialTab] = useState<'map' | 'leaderboard' | 'profile'>('map');
   const userProfile = getUserCustomProfile();
 
@@ -151,7 +155,13 @@ export function StartScreen({
               onClick={() => audioManager.playBarkSound()}
               title={`Tap ${dogAvatar.name} to bark!`}
             >
-              <FullBodyDogImage avatarId={dogAvatar.id} size={120} animated />
+              <FullBodyDogImage
+                avatarId={dogAvatar.id}
+                customImageUrl={dogAvatar.customImageUrl}
+                customSvg={dogAvatar.customSvg}
+                size={120}
+                animated
+              />
             </div>
 
             {/* Saved Dog Avatar Badge with Dog Name */}
@@ -183,6 +193,20 @@ export function StartScreen({
               START GAME
             </button>
 
+            {/* Dog AI Image Studio Button */}
+            <button
+              id="start-open-ai-studio-btn"
+              type="button"
+              onClick={() => {
+                audioManager.playClickSound();
+                setShowAiStudioModal(true);
+              }}
+              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white py-2.5 sm:py-3.5 px-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm md:text-base font-black shadow-[0_4px_0_rgb(88,28,135)] active:shadow-none active:translate-y-1 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-300 animate-spin" />
+              <span>🎨 Dog AI Image Studio</span>
+            </button>
+
             {/* High Score Map Button */}
             <button
               id="start-open-map-btn"
@@ -211,6 +235,15 @@ export function StartScreen({
           🦴 Geometric Balance Edition
         </div>
       </footer>
+
+      {/* Dog AI Image Studio Modal */}
+      <DogAiStudioModal
+        isOpen={showAiStudioModal}
+        onClose={() => setShowAiStudioModal(false)}
+        currentDogAvatar={dogAvatar}
+        achievements={achievements}
+        onSelectDogAvatar={onSelectDogAvatar}
+      />
 
       {/* High Score Adventure Map Modal */}
       <HighScoreMapModal

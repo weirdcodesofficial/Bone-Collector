@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback, type MouseEvent, type TouchEvent } from 'react';
-import { Trophy, Sparkles, X, Heart, Compass } from 'lucide-react';
+import { Trophy, Sparkles, X, Heart, Compass, Image as ImageIcon } from 'lucide-react';
 import { audioManager } from '../utils/audio';
 import { Particle, FloatingText } from '../types';
 import { ExitModal } from './ExitModal';
@@ -7,6 +7,9 @@ import { SoundToggle } from './SoundToggle';
 import { HighScoreMapModal } from './HighScoreMapModal';
 import { DOG_AVATARS, DogAvatar, getNextUniqueDogAvatar } from '../data/dogAvatars';
 import { FullBodyDogImage } from './FullBodyDogImage';
+import { AchievementUnlockedModal } from './AchievementUnlockedModal';
+import { DogAiStudioModal } from './DogAiStudioModal';
+import { generateDogAchievementSvg } from '../utils/aiImageGenerator';
 
 // Desktop 1920x1080 Resolution
 const GAME_WIDTH = 1920;
@@ -80,6 +83,15 @@ export function DogGameCanvas({
 
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
   const [showMapModal, setShowMapModal] = useState<boolean>(false);
+  const [showAiStudioModal, setShowAiStudioModal] = useState<boolean>(false);
+
+  // AI SVG Vector generation on new achievement state
+  const [showAchievementModal, setShowAchievementModal] = useState<boolean>(false);
+  const [modalAchievementLevel, setModalAchievementLevel] = useState<number>(1);
+  const [modalDogAvatar, setModalDogAvatar] = useState<DogAvatar>(dogAvatar);
+  const [modalAiSvg, setModalAiSvg] = useState<string | null>(null);
+  const [isGeneratingModalAiSvg, setIsGeneratingModalAiSvg] = useState<boolean>(false);
+
   const [achievementBanner, setAchievementBanner] = useState<{
     id: number;
     level: number;
@@ -546,6 +558,32 @@ export function DogGameCanvas({
                 totalBreeds: DOG_AVATARS.length,
               });
 
+              // Trigger AI Generation for new achievement (Full SVG Vector Avatar Body)
+              setModalAchievementLevel(nextAch);
+              setModalDogAvatar(nextDogAvatar);
+              setModalAiSvg(null);
+              setIsGeneratingModalAiSvg(true);
+              setShowAchievementModal(true);
+
+              // Asynchronously request AI full SVG vector avatar body
+              generateDogAchievementSvg(nextDogAvatar, nextAch)
+                .then((result) => {
+                  setModalAiSvg(result.svg);
+                  setIsGeneratingModalAiSvg(false);
+
+                  // Dynamically update the active dog avatar body to the generated vector SVG body
+                  const updatedAvatarWithSvgBody: DogAvatar = {
+                    ...nextDogAvatar,
+                    customSvg: result.svg,
+                  };
+                  setCurrentDogAvatar(updatedAvatarWithSvgBody);
+                  dogAvatarRef.current = updatedAvatarWithSvgBody;
+                  onUpdateDogAvatar?.(updatedAvatarWithSvgBody);
+                })
+                .catch(() => {
+                  setIsGeneratingModalAiSvg(false);
+                });
+
               setTimeout(() => {
                 setAchievementBanner(null);
               }, 3200);
@@ -855,13 +893,15 @@ export function DogGameCanvas({
 
             {/* Dog Avatar Full Body Image - centered and grounded */}
             <div
-              key={currentDogAvatar.id}
+              key={currentDogAvatar.id + (currentDogAvatar.customSvg || '') + (currentDogAvatar.customImageUrl || '')}
               className={`w-36 h-30 sm:w-52 sm:h-40 md:w-60 md:h-44 flex items-center justify-center drop-shadow-2xl transition-transform duration-200 ${
                 dogPos.isJumping ? 'scale-105' : 'hover:scale-105 animate-in zoom-in-90'
               }`}
             >
               <FullBodyDogImage
                 avatarId={currentDogAvatar.id}
+                customImageUrl={currentDogAvatar.customImageUrl}
+                customSvg={currentDogAvatar.customSvg}
                 size={220}
                 animated
                 jumping={dogPos.isJumping}
@@ -1010,6 +1050,25 @@ export function DogGameCanvas({
 
         {/* Top-Right Controls */}
         <div className="flex items-center gap-1.5 sm:gap-2.5">
+          {/* AI Image Studio Button */}
+          <button
+            id="gameplay-ai-studio-btn"
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              audioManager.playClickSound();
+              setShowAiStudioModal(true);
+            }}
+            className="flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-2.5 sm:px-4 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg border-b-2 sm:border-b-4 border-purple-900/30 active:translate-y-0.5 sm:active:translate-y-1 active:border-b-0 transition-all cursor-pointer min-h-[40px]"
+            title="Dog AI Image Studio"
+            aria-label="Dog AI Image Studio"
+          >
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-300 animate-spin" />
+            <span className="hidden sm:inline text-xs sm:text-sm font-black uppercase tracking-widest text-yellow-200">
+              AI Dog Art
+            </span>
+          </button>
+
           {/* Quick Map Button */}
           <button
             id="gameplay-map-btn"
@@ -1054,6 +1113,50 @@ export function DogGameCanvas({
           </button>
         </div>
       </header>
+
+      {/* AI Vector Art Body Generation on New Achievement Modal */}
+      <AchievementUnlockedModal
+        isOpen={showAchievementModal}
+        onClose={() => setShowAchievementModal(false)}
+        achievementLevel={modalAchievementLevel}
+        dogAvatar={modalDogAvatar}
+        aiSvg={modalAiSvg}
+        isGeneratingAiSvg={isGeneratingModalAiSvg}
+        collectionCount={usedAvatarIds.length}
+        totalBreeds={DOG_AVATARS.length}
+        onEquipDogAvatar={(avatar) => {
+          setCurrentDogAvatar(avatar);
+          dogAvatarRef.current = avatar;
+          onUpdateDogAvatar?.(avatar);
+        }}
+        onRegenerateAiSvg={() => {
+          setIsGeneratingModalAiSvg(true);
+          generateDogAchievementSvg(modalDogAvatar, modalAchievementLevel)
+            .then((result) => {
+              setModalAiSvg(result.svg);
+              setIsGeneratingModalAiSvg(false);
+              const updated = { ...modalDogAvatar, customSvg: result.svg, customImageUrl: undefined };
+              setCurrentDogAvatar(updated);
+              dogAvatarRef.current = updated;
+              onUpdateDogAvatar?.(updated);
+            })
+            .catch(() => {
+              setIsGeneratingModalAiSvg(false);
+            });
+        }}
+      />
+
+      {/* Dog AI Image Studio Modal */}
+      <DogAiStudioModal
+        isOpen={showAiStudioModal}
+        onClose={() => setShowAiStudioModal(false)}
+        currentDogAvatar={currentDogAvatar}
+        achievements={currentAchievements}
+        onSelectDogAvatar={(avatar) => {
+          setCurrentDogAvatar(avatar);
+          onUpdateDogAvatar?.(avatar);
+        }}
+      />
 
       {/* High Score Adventure Map Modal */}
       <HighScoreMapModal

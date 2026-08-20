@@ -99,6 +99,7 @@ export default function App() {
             achievements={achievements}
             dogAvatar={dogAvatar}
             onStartGame={handleStartGame}
+            onSelectDogAvatar={handleUpdateDogAvatar}
           />
         )}
 

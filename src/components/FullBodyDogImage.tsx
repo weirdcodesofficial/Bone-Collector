@@ -6,6 +6,8 @@ interface FullBodyDogImageProps {
   size?: number | string;
   animated?: boolean;
   jumping?: boolean;
+  customImageUrl?: string;
+  customSvg?: string;
 }
 
 export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
@@ -14,7 +16,10 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
   size = 120,
   animated = false,
   jumping = false,
+  customImageUrl,
+  customSvg,
 }) => {
+  const [imageError, setImageError] = React.useState(false);
   const width = typeof size === 'number' ? size : undefined;
   const height = typeof size === 'number' ? size * 0.8 : undefined;
 
@@ -385,7 +390,6 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
         );
 
       case 'terrier': // Jack - Jack Russell Terrier
-      default:
         return (
           <g>
             <path d="M 60 76 Q 84 84 92 70" stroke="#B45309" strokeWidth="4" strokeLinecap="round" />
@@ -409,6 +413,236 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
             <circle cx="68" cy="30" r="3" fill="#18181B" />
             <circle cx="68.8" cy="29.2" r="1" fill="#FFFFFF" />
             <polygon points="48,48 72,48 60,58" fill="#EAB308" />
+          </g>
+        );
+
+      case 'labrador': // Copper - Chocolate Lab
+        return (
+          <g>
+            <path d="M 60 76 Q 84 84 94 72" stroke="#5B21B6" strokeWidth="3" strokeLinecap="round" />
+            <ellipse cx="38" cy="80" rx="9" ry="11" fill="#582F0E" />
+            <ellipse cx="82" cy="80" rx="9" ry="11" fill="#582F0E" />
+            <ellipse cx="60" cy="64" rx="27" ry="21" fill="#78350F" stroke="#451A03" strokeWidth="1.5" />
+            <ellipse cx="35" cy="46" rx="8" ry="11" fill="#78350F" transform="rotate(-20 35 46)" />
+            <ellipse cx="85" cy="46" rx="8" ry="11" fill="#78350F" transform="rotate(20 85 46)" />
+            <path d="M 46 26 C 36 24 30 42 38 52 Z" fill="#451A03" />
+            <path d="M 74 26 C 84 24 90 42 82 52 Z" fill="#451A03" />
+            <circle cx="60" cy="34" r="18" fill="#78350F" stroke="#451A03" strokeWidth="1.5" />
+            <ellipse cx="60" cy="41" rx="9" ry="7" fill="#92400E" />
+            <ellipse cx="60" cy="37" rx="4" ry="2.8" fill="#1C1917" />
+            <path d="M 60 41 Q 63 47 60 48 Q 57 47 60 41 Z" fill="#F43F5E" />
+            <circle cx="52" cy="30" r="3.5" fill="#1C1917" />
+            <circle cx="53" cy="29" r="1" fill="#FFFFFF" />
+            <circle cx="68" cy="30" r="3.5" fill="#1C1917" />
+            <circle cx="69" cy="29" r="1" fill="#FFFFFF" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#10B981" strokeWidth="3.5" strokeLinecap="round" />
+          </g>
+        );
+
+      case 'rottweiler': // Bruno - Royal Rottweiler
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9.5" ry="11" fill="#0F172A" />
+            <ellipse cx="82" cy="80" rx="9.5" ry="11" fill="#0F172A" />
+            <ellipse cx="36" cy="86" rx="6" ry="4" fill="#B45309" />
+            <ellipse cx="84" cy="86" rx="6" ry="4" fill="#B45309" />
+            <ellipse cx="60" cy="64" rx="28" ry="22" fill="#1E293B" stroke="#0F172A" strokeWidth="1.5" />
+            <ellipse cx="50" cy="64" rx="7" ry="6" fill="#B45309" />
+            <ellipse cx="70" cy="64" rx="7" ry="6" fill="#B45309" />
+            <circle cx="60" cy="34" r="18.5" fill="#1E293B" stroke="#0F172A" strokeWidth="1.5" />
+            <ellipse cx="60" cy="41" rx="9" ry="7" fill="#B45309" />
+            <ellipse cx="60" cy="37" rx="4" ry="2.8" fill="#0F172A" />
+            <circle cx="52" cy="24" r="2.2" fill="#B45309" />
+            <circle cx="68" cy="24" r="2.2" fill="#B45309" />
+            <circle cx="52" cy="30" r="3.5" fill="#0F172A" />
+            <circle cx="53" cy="29" r="1" fill="#FFFFFF" />
+            <circle cx="68" cy="30" r="3.5" fill="#0F172A" />
+            <circle cx="69" cy="29" r="1" fill="#FFFFFF" />
+            <path d="M 46 26 C 38 24 34 40 40 50 Z" fill="#0F172A" />
+            <path d="M 74 26 C 82 24 86 40 80 50 Z" fill="#0F172A" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#DC2626" strokeWidth="3.5" strokeLinecap="round" />
+          </g>
+        );
+
+      case 'doberman': // Duke - Sleek Doberman
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="8" ry="11" fill="#1E1B4B" />
+            <ellipse cx="82" cy="80" rx="8" ry="11" fill="#1E1B4B" />
+            <ellipse cx="60" cy="64" rx="25" ry="20" fill="#312E81" stroke="#1E1B4B" strokeWidth="1.5" />
+            <polygon points="44,22 40,6 48,18" fill="#1E1B4B" />
+            <polygon points="76,22 80,6 72,18" fill="#1E1B4B" />
+            <circle cx="60" cy="33" r="17" fill="#312E81" stroke="#1E1B4B" strokeWidth="1.5" />
+            <ellipse cx="60" cy="41" rx="8" ry="6" fill="#B45309" />
+            <ellipse cx="60" cy="37" rx="3.5" ry="2.5" fill="#1E1B4B" />
+            <circle cx="52" cy="29" r="3" fill="#1E1B4B" />
+            <circle cx="68" cy="29" r="3" fill="#1E1B4B" />
+            <path d="M 48 47 Q 60 51 72 47" stroke="#F59E0B" strokeWidth="3" />
+          </g>
+        );
+
+      case 'greatdane': // Titan - Great Dane
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9" ry="12" fill="#334155" />
+            <ellipse cx="82" cy="80" rx="9" ry="12" fill="#334155" />
+            <ellipse cx="60" cy="64" rx="28" ry="22" fill="#475569" stroke="#1E293B" strokeWidth="1.5" />
+            <circle cx="60" cy="32" r="19" fill="#475569" stroke="#1E293B" strokeWidth="1.5" />
+            <ellipse cx="60" cy="42" rx="10" ry="8" fill="#334155" />
+            <ellipse cx="60" cy="38" rx="4" ry="3" fill="#0F172A" />
+            <path d="M 46 24 C 36 24 32 40 38 50 Z" fill="#334155" />
+            <path d="M 74 24 C 84 24 88 40 82 50 Z" fill="#334155" />
+            <circle cx="52" cy="29" r="3.5" fill="#0F172A" />
+            <circle cx="68" cy="29" r="3.5" fill="#0F172A" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#3B82F6" strokeWidth="3.5" />
+          </g>
+        );
+
+      case 'chihuahua': // Taco - Spicy Chihuahua
+        return (
+          <g>
+            <ellipse cx="38" cy="78" rx="7" ry="9" fill="#D97706" />
+            <ellipse cx="82" cy="78" rx="7" ry="9" fill="#D97706" />
+            <ellipse cx="60" cy="64" rx="20" ry="16" fill="#F59E0B" stroke="#B45309" strokeWidth="1" />
+            <polygon points="38,24 30,4 48,16" fill="#D97706" />
+            <polygon points="40,20 34,8 46,15" fill="#FDE68A" />
+            <polygon points="82,24 90,4 72,16" fill="#D97706" />
+            <polygon points="80,20 86,8 74,15" fill="#FDE68A" />
+            <circle cx="60" cy="32" r="16" fill="#F59E0B" stroke="#B45309" strokeWidth="1" />
+            <ellipse cx="60" cy="38" rx="6" ry="5" fill="#FEF3C7" />
+            <ellipse cx="60" cy="36" rx="2.5" ry="2" fill="#1C1917" />
+            <circle cx="51" cy="28" r="4.5" fill="#1C1917" />
+            <circle cx="52.5" cy="26.5" r="1.5" fill="#FFFFFF" />
+            <circle cx="69" cy="28" r="4.5" fill="#1C1917" />
+            <circle cx="70.5" cy="26.5" r="1.5" fill="#FFFFFF" />
+            <path d="M 50 44 Q 60 48 70 44" stroke="#DC2626" strokeWidth="2.5" />
+          </g>
+        );
+
+      case 'maltese': // Snowball - Silk Maltese
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9" ry="11" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <ellipse cx="82" cy="80" rx="9" ry="11" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <ellipse cx="60" cy="64" rx="26" ry="20" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+            <circle cx="60" cy="34" r="18" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+            <ellipse cx="42" cy="38" rx="6" ry="12" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <ellipse cx="78" cy="38" rx="6" ry="12" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <ellipse cx="60" cy="40" rx="7" ry="5" fill="#F8FAFC" />
+            <ellipse cx="60" cy="37" rx="3.5" ry="2.5" fill="#1E293B" />
+            <circle cx="52" cy="30" r="3.5" fill="#1E293B" />
+            <circle cx="53" cy="29" r="1" fill="#FFFFFF" />
+            <circle cx="68" cy="30" r="3.5" fill="#1E293B" />
+            <circle cx="69" cy="29" r="1" fill="#FFFFFF" />
+            <path d="M 54 22 Q 60 25 66 22" stroke="#F472B6" strokeWidth="3" />
+            <circle cx="60" cy="23" r="2.5" fill="#DB2777" />
+          </g>
+        );
+
+      case 'schnauzer': // Watson - Mustachio Schnauzer
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9" ry="11" fill="#475569" />
+            <ellipse cx="82" cy="80" rx="9" ry="11" fill="#475569" />
+            <ellipse cx="60" cy="64" rx="26" ry="20" fill="#64748B" stroke="#334155" strokeWidth="1.5" />
+            <circle cx="60" cy="34" r="17" fill="#64748B" stroke="#334155" strokeWidth="1.5" />
+            <polygon points="44,24 40,12 50,20" fill="#475569" />
+            <polygon points="76,24 80,12 70,20" fill="#475569" />
+            <path d="M 50 36 Q 60 48 70 36 Q 60 44 50 36 Z" fill="#E2E8F0" />
+            <ellipse cx="60" cy="35" rx="3.5" ry="2.5" fill="#0F172A" />
+            <circle cx="53" cy="28" r="3" fill="#0F172A" />
+            <circle cx="67" cy="28" r="3" fill="#0F172A" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#0284C7" strokeWidth="3" />
+          </g>
+        );
+
+      case 'chowchow': // Bear - Puffy Chow Chow
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="10" ry="11" fill="#C2410C" />
+            <ellipse cx="82" cy="80" rx="10" ry="11" fill="#C2410C" />
+            <ellipse cx="60" cy="64" rx="29" ry="23" fill="#EA580C" stroke="#9A3412" strokeWidth="1.5" />
+            <circle cx="60" cy="34" r="22" fill="#EA580C" stroke="#9A3412" strokeWidth="1.5" />
+            <circle cx="44" cy="20" r="5" fill="#9A3412" />
+            <circle cx="76" cy="20" r="5" fill="#9A3412" />
+            <ellipse cx="60" cy="40" rx="9" ry="7" fill="#9A3412" />
+            <ellipse cx="60" cy="36" rx="4" ry="3" fill="#0F172A" />
+            <path d="M 60 40 Q 63 47 60 48 Q 57 47 60 40 Z" fill="#3B0764" />
+            <circle cx="52" cy="29" r="3" fill="#0F172A" />
+            <circle cx="68" cy="29" r="3" fill="#0F172A" />
+          </g>
+        );
+
+      case 'akita': // Kuma - Noble Akita
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9.5" ry="11" fill="#EA580C" />
+            <ellipse cx="82" cy="80" rx="9.5" ry="11" fill="#EA580C" />
+            <ellipse cx="60" cy="64" rx="28" ry="21" fill="#F97316" stroke="#C2410C" strokeWidth="1.5" />
+            <ellipse cx="60" cy="66" rx="17" ry="12" fill="#FFF7ED" />
+            <polygon points="42,26 48,10 54,24" fill="#EA580C" />
+            <polygon points="66,24 72,10 78,26" fill="#EA580C" />
+            <circle cx="60" cy="34" r="18" fill="#F97316" stroke="#C2410C" strokeWidth="1.5" />
+            <ellipse cx="60" cy="41" rx="10" ry="7" fill="#FFF7ED" />
+            <ellipse cx="60" cy="37" rx="4" ry="2.8" fill="#1C1917" />
+            <circle cx="52" cy="30" r="3.2" fill="#1C1917" />
+            <circle cx="68" cy="30" r="3.2" fill="#1C1917" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#DC2626" strokeWidth="3.5" />
+          </g>
+        );
+
+      case 'bullterrier': // Buster - Target Bull Terrier
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9" ry="11" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <ellipse cx="82" cy="80" rx="9" ry="11" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <ellipse cx="60" cy="64" rx="27" ry="21" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+            <ellipse cx="60" cy="34" rx="16" ry="20" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+            <polygon points="46,20 42,4 52,14" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <polygon points="74,20 78,4 68,14" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <ellipse cx="52" cy="28" rx="6" ry="7" fill="#E11D48" />
+            <ellipse cx="60" cy="48" rx="4.5" ry="3" fill="#18181B" />
+            <ellipse cx="52" cy="28" rx="2" ry="1.5" fill="#18181B" />
+            <ellipse cx="68" cy="28" rx="2" ry="1.5" fill="#18181B" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#E11D48" strokeWidth="3" />
+          </g>
+        );
+
+      case 'basset': // Sherlock - Basset Hound
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="8" ry="10" fill="#78350F" />
+            <ellipse cx="82" cy="80" rx="8" ry="10" fill="#78350F" />
+            <ellipse cx="60" cy="66" rx="28" ry="18" fill="#92400E" stroke="#78350F" strokeWidth="1.5" />
+            <circle cx="60" cy="36" r="17" fill="#92400E" stroke="#78350F" strokeWidth="1.5" />
+            <path d="M 42 28 C 30 28 24 54 36 64 Z" fill="#78350F" />
+            <path d="M 78 28 C 90 28 96 54 84 64 Z" fill="#78350F" />
+            <ellipse cx="60" cy="44" rx="9" ry="8" fill="#FEF3C7" />
+            <ellipse cx="60" cy="40" rx="4.5" ry="3" fill="#18181B" />
+            <circle cx="52" cy="33" r="3.2" fill="#18181B" />
+            <circle cx="68" cy="33" r="3.2" fill="#18181B" />
+            <path d="M 48 50 Q 60 54 72 50" stroke="#059669" strokeWidth="3" />
+          </g>
+        );
+
+      case 'goldendoodle': // Waffles - Honey Goldendoodle
+      default:
+        return (
+          <g>
+            <ellipse cx="38" cy="80" rx="9" ry="11" fill="#D97706" />
+            <ellipse cx="82" cy="80" rx="9" ry="11" fill="#D97706" />
+            <ellipse cx="60" cy="64" rx="27" ry="21" fill="#F59E0B" stroke="#D97706" strokeWidth="1.5" />
+            <circle cx="60" cy="34" r="19" fill="#F59E0B" stroke="#D97706" strokeWidth="1.5" />
+            <ellipse cx="42" cy="36" rx="7" ry="12" fill="#D97706" />
+            <ellipse cx="78" cy="36" rx="7" ry="12" fill="#D97706" />
+            <ellipse cx="60" cy="41" rx="8.5" ry="6.5" fill="#FEF3C7" />
+            <ellipse cx="60" cy="37" rx="3.8" ry="2.7" fill="#18181B" />
+            <path d="M 60 41 Q 63 47 60 48 Q 57 47 60 41 Z" fill="#F43F5E" />
+            <circle cx="52" cy="30" r="3.5" fill="#18181B" />
+            <circle cx="53" cy="29" r="1" fill="#FFFFFF" />
+            <circle cx="68" cy="30" r="3.5" fill="#18181B" />
+            <circle cx="69" cy="29" r="1" fill="#FFFFFF" />
+            <path d="M 48 48 Q 60 52 72 48" stroke="#EC4899" strokeWidth="3.5" />
           </g>
         );
     }
@@ -1093,7 +1327,6 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
         );
 
       case 'terrier': // Jack Russell - Jack
-      default:
         return (
           <g>
             {/* Upright Cheerful Terrier Tail */}
@@ -1130,8 +1363,337 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
             </g>
           </g>
         );
+
+      case 'labrador': // Chocolate Lab - Copper
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 28 58 Q 14 52 18 66" stroke="#451A03" strokeWidth="5" strokeLinecap="round" />
+            </g>
+            <ellipse cx="62" cy="62" rx="30" ry="20" fill="#78350F" stroke="#451A03" strokeWidth="1.5" />
+            <rect x="42" y="68" width="8" height="20" rx="4" fill="#582F0E" />
+            <rect x="74" y="66" width="8" height="22" rx="4" fill="#78350F" stroke="#451A03" strokeWidth="1" />
+            <ellipse cx="46" cy="88" rx="6" ry="4" fill="#451A03" />
+            <ellipse cx="78" cy="88" rx="6" ry="4" fill="#451A03" />
+            <g className="dog-head-idle">
+              <circle cx="90" cy="42" r="17" fill="#78350F" stroke="#451A03" strokeWidth="1.5" />
+              <path d="M 98 42 Q 112 44 110 50 Q 102 54 94 50 Z" fill="#92400E" />
+              <ellipse cx="109" cy="46" rx="3.5" ry="2.5" fill="#1C1917" />
+              <path d="M 82 34 C 78 28 70 38 72 50 Z" fill="#451A03" />
+              <circle cx="95" cy="38" r="2.8" fill="#1C1917" />
+              <circle cx="96" cy="37" r="0.8" fill="#FFFFFF" />
+              <path d="M 80 52 Q 88 56 96 50" stroke="#10B981" strokeWidth="3.5" strokeLinecap="round" />
+            </g>
+          </g>
+        );
+
+      case 'rottweiler': // Royal Rottweiler - Bruno
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <circle cx="32" cy="58" r="4.5" fill="#0F172A" />
+            </g>
+            <ellipse cx="62" cy="62" rx="30" ry="21" fill="#1E293B" stroke="#0F172A" strokeWidth="1.5" />
+            <ellipse cx="56" cy="70" rx="10" ry="6" fill="#B45309" />
+            <rect x="42" y="68" width="9" height="20" rx="4.5" fill="#0F172A" />
+            <rect x="74" y="66" width="9" height="22" rx="4.5" fill="#1E293B" stroke="#0F172A" strokeWidth="1" />
+            <ellipse cx="46.5" cy="88" rx="6.5" ry="4" fill="#B45309" />
+            <ellipse cx="78.5" cy="88" rx="6.5" ry="4" fill="#B45309" />
+            <g className="dog-head-idle">
+              <circle cx="90" cy="42" r="18" fill="#1E293B" stroke="#0F172A" strokeWidth="1.5" />
+              <circle cx="86" cy="32" r="1.8" fill="#B45309" />
+              <path d="M 96 42 Q 112 44 110 50 Q 102 54 94 50 Z" fill="#B45309" />
+              <ellipse cx="109" cy="46" rx="3.5" ry="2.5" fill="#0F172A" />
+              <path d="M 82 34 C 76 28 72 38 74 48 Z" fill="#0F172A" />
+              <circle cx="94" cy="38" r="2.8" fill="#0F172A" />
+              <circle cx="95" cy="37" r="0.8" fill="#FFFFFF" />
+              <path d="M 80 52 Q 88 56 96 50" stroke="#DC2626" strokeWidth="3.5" strokeLinecap="round" />
+            </g>
+          </g>
+        );
+
+      case 'doberman': // Sleek Doberman - Duke
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <circle cx="34" cy="56" r="3.5" fill="#1E1B4B" />
+            </g>
+            <ellipse cx="62" cy="62" rx="27" ry="18" fill="#312E81" stroke="#1E1B4B" strokeWidth="1.5" />
+            <rect x="42" y="68" width="7" height="22" rx="3.5" fill="#1E1B4B" />
+            <rect x="74" y="66" width="7" height="24" rx="3.5" fill="#312E81" />
+            <ellipse cx="45.5" cy="90" rx="5" ry="3.5" fill="#B45309" />
+            <ellipse cx="77.5" cy="90" rx="5" ry="3.5" fill="#B45309" />
+            <g className="dog-head-idle">
+              <polygon points="76,32 72,12 82,26" fill="#1E1B4B" />
+              <circle cx="88" cy="40" r="16" fill="#312E81" stroke="#1E1B4B" strokeWidth="1.5" />
+              <path d="M 94 40 Q 110 42 108 48 Q 100 52 92 48 Z" fill="#B45309" />
+              <ellipse cx="107" cy="44" rx="3" ry="2" fill="#1E1B4B" />
+              <circle cx="92" cy="36" r="2.5" fill="#1E1B4B" />
+              <path d="M 80 50 Q 88 54 96 48" stroke="#F59E0B" strokeWidth="3" />
+            </g>
+          </g>
+        );
+
+      case 'greatdane': // Gentle Great Dane - Titan
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 28 58 Q 16 70 12 84" stroke="#334155" strokeWidth="4" strokeLinecap="round" />
+            </g>
+            <ellipse cx="62" cy="60" rx="32" ry="22" fill="#475569" stroke="#1E293B" strokeWidth="1.5" />
+            <rect x="40" y="66" width="9" height="24" rx="4.5" fill="#334155" />
+            <rect x="76" y="64" width="9" height="26" rx="4.5" fill="#475569" stroke="#1E293B" strokeWidth="1" />
+            <ellipse cx="44.5" cy="90" rx="6.5" ry="4" fill="#334155" />
+            <ellipse cx="80.5" cy="90" rx="6.5" ry="4" fill="#334155" />
+            <g className="dog-head-idle">
+              <circle cx="92" cy="38" r="19" fill="#475569" stroke="#1E293B" strokeWidth="1.5" />
+              <path d="M 100 38 Q 118 40 116 50 Q 106 56 96 50 Z" fill="#334155" />
+              <ellipse cx="114" cy="44" rx="4" ry="3" fill="#0F172A" />
+              <path d="M 82 30 C 76 24 72 36 76 48 Z" fill="#334155" />
+              <circle cx="96" cy="34" r="3" fill="#0F172A" />
+              <path d="M 82 50 Q 92 56 100 48" stroke="#3B82F6" strokeWidth="3.5" />
+            </g>
+          </g>
+        );
+
+      case 'chihuahua': // Spicy Chihuahua - Taco
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 36 60 Q 24 50 28 40" stroke="#D97706" strokeWidth="3" strokeLinecap="round" />
+            </g>
+            <ellipse cx="60" cy="64" rx="20" ry="15" fill="#F59E0B" stroke="#B45309" strokeWidth="1" />
+            <rect x="46" y="70" width="5" height="16" rx="2.5" fill="#D97706" />
+            <rect x="68" y="68" width="5" height="18" rx="2.5" fill="#F59E0B" />
+            <ellipse cx="48.5" cy="86" rx="4" ry="2.5" fill="#FDE68A" />
+            <ellipse cx="70.5" cy="86" rx="4" ry="2.5" fill="#FDE68A" />
+            <g className="dog-head-idle">
+              <polygon points="76,28 66,8 86,22" fill="#D97706" />
+              <polygon points="78,26 72,14 84,22" fill="#FDE68A" />
+              <circle cx="86" cy="40" r="14" fill="#F59E0B" stroke="#B45309" strokeWidth="1" />
+              <ellipse cx="94" cy="44" rx="5" ry="4" fill="#FEF3C7" />
+              <ellipse cx="97" cy="43" rx="2" ry="1.5" fill="#1C1917" />
+              <circle cx="84" cy="36" r="3.5" fill="#1C1917" />
+              <circle cx="85" cy="35" r="1" fill="#FFFFFF" />
+              <path d="M 76 48 Q 84 52 92 46" stroke="#DC2626" strokeWidth="2.5" />
+            </g>
+          </g>
+        );
+
+      case 'maltese': // Silk Maltese - Snowball
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 32 60 Q 20 44 26 34" stroke="#CBD5E1" strokeWidth="4" strokeLinecap="round" />
+            </g>
+            <ellipse cx="60" cy="64" rx="26" ry="19" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+            <rect x="42" y="68" width="7" height="18" rx="3.5" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <rect x="72" y="66" width="7" height="20" rx="3.5" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <ellipse cx="45.5" cy="86" rx="5.5" ry="3.5" fill="#FFFFFF" />
+            <ellipse cx="75.5" cy="86" rx="5.5" ry="3.5" fill="#FFFFFF" />
+            <g className="dog-head-idle">
+              <circle cx="86" cy="40" r="16" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+              <ellipse cx="76" cy="42" rx="5" ry="10" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+              <ellipse cx="92" cy="44" rx="6" ry="4" fill="#F8FAFC" />
+              <ellipse cx="95" cy="43" rx="3" ry="2" fill="#1E293B" />
+              <circle cx="82" cy="36" r="3" fill="#1E293B" />
+              <circle cx="83" cy="35" r="0.8" fill="#FFFFFF" />
+              <path d="M 80 24 Q 86 28 92 24" stroke="#F472B6" strokeWidth="3" />
+              <circle cx="86" cy="25" r="2" fill="#DB2777" />
+            </g>
+          </g>
+        );
+
+      case 'schnauzer': // Mustachio Schnauzer - Watson
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 34 58 Q 24 46 28 36" stroke="#475569" strokeWidth="3.5" strokeLinecap="round" />
+            </g>
+            <ellipse cx="60" cy="62" rx="27" ry="18" fill="#64748B" stroke="#334155" strokeWidth="1.5" />
+            <rect x="42" y="68" width="7.5" height="18" rx="3.7" fill="#475569" />
+            <rect x="72" y="66" width="7.5" height="20" rx="3.7" fill="#64748B" stroke="#334155" strokeWidth="1" />
+            <ellipse cx="45.5" cy="86" rx="5.5" ry="3.5" fill="#E2E8F0" />
+            <ellipse cx="75.5" cy="86" rx="5.5" ry="3.5" fill="#E2E8F0" />
+            <g className="dog-head-idle">
+              <polygon points="76,28 72,14 82,24" fill="#475569" />
+              <circle cx="86" cy="40" r="16" fill="#64748B" stroke="#334155" strokeWidth="1.5" />
+              <path d="M 88 38 Q 106 42 104 48 Q 96 52 86 48 Z" fill="#E2E8F0" />
+              <ellipse cx="102" cy="44" rx="3" ry="2" fill="#0F172A" />
+              <circle cx="82" cy="34" r="2.5" fill="#0F172A" />
+              <path d="M 76 50 Q 86 54 96 48" stroke="#0284C7" strokeWidth="3" />
+            </g>
+          </g>
+        );
+
+      case 'chowchow': // Puffy Chow Chow - Bear
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <circle cx="30" cy="54" r="9" fill="#C2410C" />
+            </g>
+            <ellipse cx="62" cy="62" rx="30" ry="23" fill="#EA580C" stroke="#9A3412" strokeWidth="1.5" />
+            <rect x="40" y="68" width="9" height="20" rx="4.5" fill="#C2410C" />
+            <rect x="74" y="66" width="9" height="22" rx="4.5" fill="#EA580C" />
+            <ellipse cx="44.5" cy="88" rx="6.5" ry="4" fill="#C2410C" />
+            <ellipse cx="78.5" cy="88" rx="6.5" ry="4" fill="#C2410C" />
+            <g className="dog-head-idle">
+              <circle cx="90" cy="40" r="20" fill="#EA580C" stroke="#9A3412" strokeWidth="1.5" />
+              <circle cx="80" cy="24" r="4.5" fill="#9A3412" />
+              <ellipse cx="98" cy="44" rx="7" ry="5" fill="#9A3412" />
+              <ellipse cx="102" cy="42" rx="3.5" ry="2.5" fill="#0F172A" />
+              <circle cx="86" cy="34" r="2.5" fill="#0F172A" />
+            </g>
+          </g>
+        );
+
+      case 'akita': // Noble Akita - Kuma
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 34 52 C 24 44 20 54 28 62 C 34 66 38 58 32 52 Z" fill="#EA580C" stroke="#C2410C" strokeWidth="1.5" />
+            </g>
+            <ellipse cx="62" cy="62" rx="29" ry="20" fill="#F97316" stroke="#C2410C" strokeWidth="1.5" />
+            <path d="M 52 70 Q 72 76 80 62 Q 74 54 58 60 Z" fill="#FFF7ED" />
+            <rect x="42" y="68" width="8" height="20" rx="4" fill="#EA580C" />
+            <rect x="74" y="66" width="8" height="22" rx="4" fill="#F97316" />
+            <ellipse cx="46" cy="88" rx="6" ry="4" fill="#FFF7ED" />
+            <ellipse cx="78" cy="88" rx="6" ry="4" fill="#FFF7ED" />
+            <g className="dog-head-idle">
+              <polygon points="76,32 82,16 88,30" fill="#EA580C" />
+              <circle cx="88" cy="42" r="17" fill="#F97316" stroke="#C2410C" strokeWidth="1.5" />
+              <ellipse cx="96" cy="46" rx="8" ry="6" fill="#FFF7ED" />
+              <ellipse cx="99" cy="44" rx="3.5" ry="2.5" fill="#1C1917" />
+              <circle cx="84" cy="36" r="2.8" fill="#1C1917" />
+              <path d="M 78 52 Q 88 56 98 50" stroke="#DC2626" strokeWidth="3.5" />
+            </g>
+          </g>
+        );
+
+      case 'bullterrier': // Target Bull Terrier - Buster
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 32 58 Q 18 52 22 42" stroke="#CBD5E1" strokeWidth="4" strokeLinecap="round" />
+            </g>
+            <ellipse cx="60" cy="62" rx="28" ry="19" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+            <rect x="42" y="68" width="8" height="19" rx="4" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <rect x="72" y="66" width="8" height="21" rx="4" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+            <ellipse cx="46" cy="87" rx="6" ry="3.5" fill="#FFFFFF" />
+            <ellipse cx="76" cy="87" rx="6" ry="3.5" fill="#FFFFFF" />
+            <g className="dog-head-idle">
+              <polygon points="76,28 72,12 82,22" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1" />
+              <ellipse cx="90" cy="42" rx="18" ry="15" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="1.5" />
+              <ellipse cx="84" cy="36" rx="5" ry="6" fill="#E11D48" />
+              <ellipse cx="106" cy="48" rx="4" ry="2.8" fill="#18181B" />
+              <ellipse cx="84" cy="36" rx="2" ry="1.5" fill="#18181B" />
+              <path d="M 78 52 Q 88 56 98 50" stroke="#E11D48" strokeWidth="3" />
+            </g>
+          </g>
+        );
+
+      case 'basset': // Droopy Basset - Sherlock
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 30 62 Q 18 50 24 38" stroke="#78350F" strokeWidth="4" strokeLinecap="round" />
+            </g>
+            <ellipse cx="60" cy="64" rx="30" ry="18" fill="#92400E" stroke="#78350F" strokeWidth="1.5" />
+            <rect x="42" y="68" width="8" height="15" rx="4" fill="#78350F" />
+            <rect x="74" y="66" width="8" height="17" rx="4" fill="#92400E" stroke="#78350F" strokeWidth="1" />
+            <ellipse cx="46" cy="83" rx="6" ry="3.5" fill="#FEF3C7" />
+            <ellipse cx="78" cy="83" rx="6" ry="3.5" fill="#FEF3C7" />
+            <g className="dog-head-idle">
+              <circle cx="88" cy="44" r="16" fill="#92400E" stroke="#78350F" strokeWidth="1.5" />
+              <path d="M 76 34 C 64 34 60 62 72 70 Z" fill="#78350F" />
+              <ellipse cx="98" cy="48" rx="8" ry="6" fill="#FEF3C7" />
+              <ellipse cx="102" cy="47" rx="4" ry="2.8" fill="#18181B" />
+              <circle cx="84" cy="40" r="2.8" fill="#18181B" />
+              <path d="M 78 54 Q 88 58 98 52" stroke="#059669" strokeWidth="3" />
+            </g>
+          </g>
+        );
+
+      case 'goldendoodle': // Honey Goldendoodle - Waffles
+      default:
+        return (
+          <g>
+            <g className="dog-tail-idle">
+              <path d="M 28 58 C 18 50 12 60 18 70" stroke="#D97706" strokeWidth="4.5" strokeLinecap="round" />
+            </g>
+            <ellipse cx="62" cy="62" rx="29" ry="20" fill="#F59E0B" stroke="#D97706" strokeWidth="1.5" />
+            <rect x="42" y="68" width="8" height="20" rx="4" fill="#D97706" />
+            <rect x="74" y="66" width="8" height="22" rx="4" fill="#F59E0B" stroke="#D97706" strokeWidth="1" />
+            <ellipse cx="46" cy="88" rx="6" ry="4" fill="#FEF3C7" />
+            <ellipse cx="78" cy="88" rx="6" ry="4" fill="#FEF3C7" />
+            <g className="dog-head-idle">
+              <circle cx="90" cy="42" r="18" fill="#F59E0B" stroke="#D97706" strokeWidth="1.5" />
+              <ellipse cx="78" cy="40" rx="6" ry="12" fill="#D97706" />
+              <ellipse cx="98" cy="46" rx="7.5" ry="5.5" fill="#FEF3C7" />
+              <ellipse cx="101" cy="44" rx="3.5" ry="2.5" fill="#18181B" />
+              <circle cx="86" cy="36" r="3" fill="#18181B" />
+              <circle cx="87" cy="35" r="0.8" fill="#FFFFFF" />
+              <path d="M 80 52 Q 88 56 96 50" stroke="#EC4899" strokeWidth="3.5" />
+            </g>
+          </g>
+        );
     }
   };
+
+  if (customSvg) {
+    return (
+      <div
+        className={`inline-flex items-center justify-center select-none relative ${className} ${
+          jumping ? 'transform -translate-y-2 scale-105 transition-transform' : animated ? 'transition-all duration-300' : ''
+        }`}
+        style={{
+          width: width ? `${width}px` : '100%',
+          height: height ? `${height}px` : 'auto',
+        }}
+      >
+        <div
+          className="w-full h-full flex items-center justify-center relative [&>svg]:w-full [&>svg]:h-full [&>svg]:drop-shadow-lg"
+          dangerouslySetInnerHTML={{ __html: customSvg }}
+        />
+      </div>
+    );
+  }
+
+  if (customImageUrl && !imageError) {
+    return (
+      <div
+        className={`inline-flex items-center justify-center select-none relative ${className} ${
+          jumping ? 'transform -translate-y-2 scale-105 transition-transform' : animated ? 'transition-all duration-300' : ''
+        }`}
+        style={{
+          width: width ? `${width}px` : '100%',
+          height: height ? `${height}px` : 'auto',
+        }}
+      >
+        <div className="relative w-full h-full flex items-center justify-center">
+          {/* Subtle dynamic glow for AI Dog Avatar Body */}
+          <div
+            className={`absolute -inset-1 bg-yellow-300/30 rounded-3xl blur-sm transition-all ${
+              jumping ? 'scale-110 opacity-90' : 'opacity-40'
+            }`}
+          />
+          <img
+            src={customImageUrl}
+            alt={avatarId}
+            onError={() => setImageError(true)}
+            className={`w-full h-full object-cover rounded-2xl sm:rounded-3xl border-2 border-yellow-300/90 shadow-lg drop-shadow-xl ${
+              jumping ? 'brightness-105' : ''
+            }`}
+            referrerPolicy="no-referrer"
+          />
+          {/* AI Trophy Tag */}
+          <div className="absolute -bottom-1 -right-1 bg-yellow-400 text-yellow-950 text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded-full border border-yellow-200 shadow-md flex items-center gap-0.5">
+            <span>✨ AI</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
