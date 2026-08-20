@@ -376,28 +376,39 @@ export function isDogAvatarUnlocked(
  */
 export function getNextUniqueDogAvatar(
   currentId: string,
-  usedIds: string[] = []
+  usedIds: string[] = [],
+  achievementLevel?: number
 ): { nextAvatar: DogAvatar; updatedUsedIds: string[] } {
   const currentSet = new Set(usedIds);
   currentSet.add(currentId);
 
-  // Find all avatars that have NEVER been used in this achievement cycle
-  let availableCandidates = DOG_AVATARS.filter((avatar) => !currentSet.has(avatar.id));
+  let selectedAvatar: DogAvatar;
 
-  let newUsedList: string[];
+  if (achievementLevel !== undefined && achievementLevel > 0) {
+    // Determine the target avatar index based on achievement level
+    // Trophy 1 -> DOG_AVATARS[1], Trophy 2 -> DOG_AVATARS[2], ... Trophy 29 -> DOG_AVATARS[29], Trophy 30 -> DOG_AVATARS[1]
+    const availablePool = DOG_AVATARS.slice(1); // Exclude default golden (Buddy) for unlocks
+    const targetIndex = (achievementLevel - 1) % availablePool.length;
+    const targetCandidate = availablePool[targetIndex];
 
-  // If all avatars have been unlocked/seen, start a fresh cycle without repeating current
-  if (availableCandidates.length === 0) {
-    availableCandidates = DOG_AVATARS.filter((avatar) => avatar.id !== currentId);
-    newUsedList = [currentId];
+    if (targetCandidate && targetCandidate.id !== currentId) {
+      selectedAvatar = targetCandidate;
+    } else {
+      // Pick next candidate that isn't current
+      const nextCandidates = availablePool.filter((a) => a.id !== currentId);
+      selectedAvatar = nextCandidates.length > 0 ? nextCandidates[0] : (targetCandidate || DEFAULT_DOG_AVATAR);
+    }
   } else {
-    newUsedList = Array.from(currentSet);
+    // Filter out all avatars in the used set
+    let availableCandidates = DOG_AVATARS.filter((avatar) => !currentSet.has(avatar.id));
+    if (availableCandidates.length === 0) {
+      availableCandidates = DOG_AVATARS.filter((avatar) => avatar.id !== currentId);
+    }
+    const randomIndex = Math.floor(Math.random() * availableCandidates.length);
+    selectedAvatar = availableCandidates[randomIndex] || DEFAULT_DOG_AVATAR;
   }
 
-  const randomIndex = Math.floor(Math.random() * availableCandidates.length);
-  const selectedAvatar = availableCandidates[randomIndex] || DEFAULT_DOG_AVATAR;
-
-  // Add the newly selected avatar to the used list
+  const newUsedList = Array.from(currentSet);
   if (!newUsedList.includes(selectedAvatar.id)) {
     newUsedList.push(selectedAvatar.id);
   }

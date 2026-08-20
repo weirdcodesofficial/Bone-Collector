@@ -36,20 +36,94 @@ async function startServer() {
         },
       });
 
-      const prompt = `Generate a complete, beautiful, scalable vector SVG illustration of an adorable full-body cartoon ${breed || 'Golden Retriever'} dog named "${name || 'Champion'}" (${title || 'Bone Scout'}) celebrating trophy achievement #${achievementLevel || 1}.
-Requirements:
-1. Output ONLY the raw <svg>...</svg> element. Do not wrap in markdown codeblocks. Do not include any explanations or commentary.
-2. The SVG MUST have viewBox="0 0 200 160" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg".
-3. Include full body: head, floppy/perky ears, cheerful shiny expressive cartoon eyes with highlights, nose, muzzle with tongue, front legs with paws, hind body and legs, wagging tail with motion lines, and a collar with a shiny golden trophy medal stamped with "#${achievementLevel || 1}".
-4. Use rich modern gradient definitions (<defs><linearGradient>...), clean rounded paths/polygons/circles, and matching brand accent color "${accentColor}".
-5. Ensure valid XML syntax and closed tags so it renders cleanly in React.`;
+      // Tailor anatomical guidance to the specific breed
+      const breedLower = (breed || '').toLowerCase();
+      let breedTraits = 'athletic build, distinct 4 legs, breed-appropriate ears and tail, rich coat colors';
+      
+      if (breedLower.includes('corgi')) {
+        breedTraits = 'iconic ultra-short stubby legs, elongated body, big upright pointed foxy ears, white chest blaze and paws, fox-colored coat';
+      } else if (breedLower.includes('dachshund')) {
+        breedTraits = 'ultra-long slender sausage body, very short legs, long velvety droopy ears, long tapering snout, sleek tan coat';
+      } else if (breedLower.includes('poodle')) {
+        breedTraits = 'elegant fluffy puffy pom-pom head topknot, curly coat puffs on paws, slender graceful legs, puffy pom-pom tail, stylish build';
+      } else if (breedLower.includes('pug')) {
+        breedTraits = 'chubby round stocky body, wrinkled black face mask, button fold ears, tight curly spiral piggy tail, short sturdy legs';
+      } else if (breedLower.includes('french') || breedLower.includes('bull')) {
+        breedTraits = 'compact muscular stocky body, wide round erect bat-ears, flat wrinkled snout, tiny nub tail, sturdy chest';
+      } else if (breedLower.includes('dalmatian')) {
+        breedTraits = 'clean pure white sleek athletic body covered with distinct scattered crisp black spots, floppy spotted ears, sleek tail';
+      } else if (breedLower.includes('husky')) {
+        breedTraits = 'wolf-like silvery slate & white coat, iconic husky face mask, piercing eyes, bushy curved tail, athletic arctic runner build';
+      } else if (breedLower.includes('shiba')) {
+        breedTraits = 'fox-like golden-orange coat with white urajiro cheeks & belly, triangular prick ears, tightly curled tail over back';
+      } else if (breedLower.includes('samoyed')) {
+        breedTraits = 'ultra-fluffy cloud-like pure white double coat, smiling black mouth, dark eyes and nose, plumed tail arching over back';
+      } else if (breedLower.includes('chihuahua')) {
+        breedTraits = 'tiny delicate pocket-sized body, oversized triangular bat ears, giant sparkling round eyes, slender slender legs, perky tail';
+      } else if (breedLower.includes('basset')) {
+        breedTraits = 'extra-long droopy velvety ears reaching down, low-slung long body, tricolor hound coat, loose skin wrinkles, droopy eyes';
+      } else if (breedLower.includes('boxer')) {
+        breedTraits = 'muscular deep-chested athletic build, square dark muzzle with jowls, rich fawn-red coat, white chest splash, alert stance';
+      } else if (breedLower.includes('doberman')) {
+        breedTraits = 'sleek aerodynamic midnight black/indigo body, tall erect pointed ears, rich rust markings on muzzle and legs, noble stance';
+      } else if (breedLower.includes('rottweiler')) {
+        breedTraits = 'stocky powerful black muscular body, rich mahogany/rust markings above eyes, muzzle, and chest, broad head';
+      } else if (breedLower.includes('schnauzer')) {
+        breedTraits = 'pepper-gray coat with distinguished bushy white beard/mustache, bushy eyebrows, folded ears, square sturdy build';
+      } else if (breedLower.includes('chow')) {
+        breedTraits = 'huge puffy lion-like mane around neck, rounded teddy-bear ears, deep orange-brown plush coat, fluffy curled tail';
+      } else if (breedLower.includes('maltese')) {
+        breedTraits = 'tiny pure white silky fluffy coat, cute pink topknot bow in hair, button black nose and dark eyes, dainty paws';
+      } else if (breedLower.includes('collie')) {
+        breedTraits = 'agile athletic herding build, classic black and white tuxedo coat with full white collar and chest blaze, semi-prick ears';
+      } else if (breedLower.includes('beagle')) {
+        breedTraits = 'classic tricolor black saddle, tan head/flanks, white chest and white-tipped upright hound tail, long droopy hound ears';
+      } else if (breedLower.includes('great dane') || breedLower.includes('dane')) {
+        breedTraits = 'giant statuesque tall build, long straight legs, deep athletic chest, noble slate coat, long tapering tail';
+      } else if (breedLower.includes('shepherd')) {
+        breedTraits = 'noble athletic guard stance, black saddle back with warm tan belly and legs, tall pointed upright ears with pink inner ear, saber tail';
+      } else if (breedLower.includes('golden') || breedLower.includes('labrador') || breedLower.includes('retriever')) {
+        breedTraits = 'warm golden/chocolate silky coat, friendly rounded floppy ears, cheerful feathered tail, strong athletic retriever build';
+      }
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-      });
+      const prompt = `Generate a complete, unique, high-quality, scalable vector SVG illustration of a full-body ${breed || 'Dog'} named "${name || 'Champion'}" (${title || 'Bone Scout'}) in an athletic side-profile standing pose facing right.
+Unique Breed Requirements:
+- Breed: ${breed || 'Dog'} (Anatomical Traits: ${breedTraits})
+- Color Palette: Accent color ${accentColor || '#F59E0B'} with realistic, high-contrast breed coat colors and shading.
+- Output ONLY the raw <svg>...</svg> element. Do not wrap in markdown codeblocks. No commentary.
+- The SVG MUST have viewBox="0 0 200 160" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg".
+- Structure & Components:
+   1. DO NOT generate any ground shadow, floor patch, or shadow ellipse under the paws. The character must be on a clean transparent background without shadows.
+   2. 4 distinct articulated legs (2 near legs with full detail and 2 far legs in a darker shaded tone).
+   3. Breed-accurate body silhouette, head shape, ears (pointed, bat, floppy, droopy, or puff depending on breed), and tail.
+   4. A stylish champion collar or saddle vest in ${accentColor || '#EF4444'} with a shiny golden achievement trophy medal stamped with "★${achievementLevel || 1}".
+   5. DO NOT include any blue bar, handle, or stick on the body.
+   6. Clean vector paths, modern linear gradients (<defs><linearGradient>...), and rich contrast.
+- Ensure valid XML syntax and closed tags so it renders cleanly in React.`;
 
-      let svgText = response.text || '';
+      // Cascade through models in case of high demand spikes (503) or rate limits
+      const candidateModels = ['gemini-3.6-flash', 'gemini-2.0-flash', 'gemini-3.7-flash'];
+      let responseText = '';
+      let lastError: any = null;
+
+      for (const modelName of candidateModels) {
+        try {
+          const response = await ai.models.generateContent({
+            model: modelName,
+            contents: prompt,
+          });
+          if (response && response.text) {
+            responseText = response.text;
+            break;
+          }
+        } catch (err: any) {
+          lastError = err;
+          // Brief pause before trying next candidate
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+      }
+
+      let svgText = responseText.trim();
       // Clean any markdown formatting if present
       svgText = svgText.replace(/```xml\s*/gi, '').replace(/```svg\s*/gi, '').replace(/```\s*/gi, '').trim();
 
@@ -58,10 +132,19 @@ Requirements:
         svgText = svgMatch[0];
       }
 
+      // Strip any ground shadow ellipses if generated
+      svgText = svgText
+        .replace(/<ellipse[^>]*fill=["']#14532D["'][^>]*\/>/gi, '')
+        .replace(/<ellipse[^>]*opacity=["']0\.2[0-9]*["'][^>]*\/>/gi, '');
+
       if (!svgText.startsWith('<svg')) {
-        return res.status(500).json({
-          error: 'Model did not return valid SVG code.',
+        return res.status(200).json({
+          svg: null,
           fallback: true,
+          message: lastError?.message || 'Model capacity temporarily busy, using local SVG vector.',
+          breed,
+          name,
+          achievementLevel,
         });
       }
 
@@ -73,7 +156,8 @@ Requirements:
       });
     } catch (err: any) {
       console.error('Error generating dog achievement SVG:', err);
-      return res.status(500).json({
+      return res.status(200).json({
+        svg: null,
         error: err?.message || 'Failed to generate dog SVG',
         fallback: true,
       });

@@ -1166,39 +1166,65 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
           </g>
         );
 
-      case 'shepherd': // German Shepherd - Rex
+      case 'shepherd': // German Shepherd - Rex (Service Dog with Harness & Guide Handle)
         return (
           <g>
-            {/* Bushy Saber Tail */}
+            {/* 1. Soft Translucent Ground Shadow under paws */}
+            <ellipse cx="64" cy="89" rx="44" ry="4" fill="#14532D" opacity="0.25" />
+
+            {/* 2. Far Back Leg (Darker Shaded Tone) */}
+            <path d="M 40 60 Q 44 70 47 77 L 43 88 Q 45 90 49 90 L 50 88 L 53 77 Q 51 68 47 60 Z" fill="#744538" />
+
+            {/* 3. Far Front Leg (Darker Shaded Tone) */}
+            <path d="M 76 64 L 75 88 Q 77 90 81 90 L 82 88 L 83 64 Z" fill="#744538" />
+
+            {/* 4. Downward Sloping Saber Tail */}
             <g className="dog-tail-idle">
-              <path d="M 30 64 C 18 56 12 72 20 80 C 26 82 32 74 34 68 Z" fill="#78350F" stroke="#451A03" strokeWidth="1.5" />
+              <path d="M 34 54 Q 20 65 22 79 Q 25 81 28 78 Q 30 67 40 59 Z" fill="#DE842C" />
             </g>
-            {/* Strong Black Saddle & Tan Flanks */}
-            <ellipse cx="64" cy="62" rx="29" ry="19" fill="#B45309" stroke="#78350F" strokeWidth="1.5" />
-            <path d="M 46 48 C 58 45 74 46 80 58 C 74 68 52 68 46 48 Z" fill="#18181B" />
-            {/* Strong Guard Legs */}
-            <rect x="42" y="68" width="8" height="20" rx="4" fill="#B45309" />
-            <rect x="76" y="66" width="8" height="22" rx="4" fill="#B45309" stroke="#78350F" strokeWidth="1" />
-            <ellipse cx="46" cy="87" rx="5.5" ry="3.5" fill="#D97706" />
-            <ellipse cx="80" cy="87" rx="5.5" ry="3.5" fill="#D97706" />
-            {/* Head and Face Idle Tilting Group */}
+
+            {/* 5. Main Body Torso (Golden Tan Base + Smooth Dark Saddle Mantle) */}
+            <path d="M 38 56 Q 34 63 40 70 Q 50 78 66 76 Q 78 76 86 64 Q 90 56 86 48 Q 80 46 66 50 Q 50 52 38 56 Z" fill="#EA8F34" />
+            <path d="M 38 56 Q 50 52 66 50 Q 80 46 86 48 Q 80 62 64 68 Q 50 68 38 56 Z" fill="#6C3E33" />
+
+            {/* 6. Near Back Leg (Defined Stifle, Hock & Saddle Marking) */}
+            <path d="M 35 54 Q 31 64 37 74 L 33 88 Q 35 90 40 90 L 42 88 L 46 75 Q 48 65 44 56 Z" fill="#EA8F34" />
+            <path d="M 35 54 Q 31 64 37 74 L 42 68 Q 46 60 44 56 Z" fill="#6C3E33" />
+
+            {/* 7. Near Front Leg (Upright Athletic Form) */}
+            <path d="M 68 62 L 67 88 Q 69 90 74 90 L 75 88 L 75 62 Z" fill="#EA8F34" />
+
+            {/* 8. Service Harness */}
+            {/* Bright Red Saddle Vest / Cape on Back */}
+            <path d="M 54 48 Q 68 46 74 54 Q 70 64 58 64 Q 52 58 54 48 Z" fill="#EF4444" />
+            {/* Charcoal Harness Girth Strap */}
+            <rect x="61" y="48" width="5" height="25" rx="1.5" fill="#374151" />
+            {/* Charcoal Harness Chest Strap */}
+            <path d="M 66 57 L 79 62 L 79 66 L 66 61 Z" fill="#374151" />
+            {/* Harness Ring Mount */}
+            <rect x="60" y="46" width="7" height="4" rx="2" fill="#374151" />
+
+            {/* 9. Head and Face Idle Tilting Group */}
             <g className="dog-head-idle">
-              {/* Noble Standing Head with Black Mask */}
-              <circle cx="90" cy="40" r="17" fill="#B45309" stroke="#78350F" strokeWidth="1.5" />
-              <path d="M 84 32 Q 92 26 100 32 L 98 50 L 82 50 Z" fill="#18181B" />
-              {/* Tall Upright Shepherd Ears */}
-              <polygon points="76,32 80,12 88,28" fill="#18181B" />
-              <polygon points="78,30 81,16 85,26" fill="#FDE68A" />
-              <polygon points="92,28 100,12 104,32" fill="#18181B" />
-              <polygon points="94,26 98,16 101,30" fill="#FDE68A" />
-              {/* Snout with Proud Black Nose */}
-              <ellipse cx="92" cy="47" rx="7.5" ry="5.5" fill="#18181B" />
-              <ellipse cx="93" cy="44" rx="3.5" ry="2.5" fill="#000000" />
-              {/* Vigilant Eyes */}
-              <circle cx="84" cy="36" r="2.5" fill="#D97706" />
-              <circle cx="84.7" cy="35.3" r="0.8" fill="#FFFFFF" />
-              {/* Hero Red Collar */}
-              <path d="M 80 54 Q 90 58 100 52" stroke="#DC2626" strokeWidth="3.5" />
+              {/* Upright Neck */}
+              <path d="M 74 52 L 80 37 L 89 39 L 85 58 Z" fill="#EA8F34" />
+              {/* Far Upright Ear */}
+              <polygon points="82,33 86,15 91,30" fill="#744538" />
+              {/* Head Base */}
+              <circle cx="90" cy="40" r="11" fill="#EA8F34" />
+              {/* Dark Face Mask & Snout */}
+              <path d="M 86 36 Q 94 34 102 41 Q 98 49 88 47 Z" fill="#6C3E33" />
+              <path d="M 91 40 L 102 42 Q 102 46 98 48 L 89 48 Z" fill="#6C3E33" />
+              {/* Shiny Black Nose */}
+              <ellipse cx="102" cy="42.5" rx="2.2" ry="1.7" fill="#18181B" />
+              {/* Gentle Mouth Seam */}
+              <path d="M 92 46 Q 97 47 100 44" stroke="#18181B" strokeWidth="1" strokeLinecap="round" fill="none" />
+              {/* Near Upright Pointed Ear with Soft Pink Interior */}
+              <polygon points="76,33 80,16 86,31" fill="#EA8F34" />
+              <polygon points="78,31 81,20 84,29" fill="#FDA4AF" />
+              {/* Shiny Dark Eye with Specular Highlight */}
+              <circle cx="90" cy="37" r="2.2" fill="#18181B" />
+              <circle cx="90.5" cy="36.5" r="0.7" fill="#FFFFFF" />
             </g>
           </g>
         );
@@ -1641,6 +1667,11 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
   };
 
   if (customSvg) {
+    const cleanedSvg = customSvg
+      .replace(/<ellipse[^>]*fill=["']#14532D["'][^>]*\/>/gi, '')
+      .replace(/<ellipse[^>]*opacity=["']0\.2[0-9]*["'][^>]*\/>/gi, '')
+      .replace(/<!-- Ground Shadow -->/gi, '');
+
     return (
       <div
         className={`inline-flex items-center justify-center select-none relative ${className} ${
@@ -1652,8 +1683,8 @@ export const FullBodyDogImage: React.FC<FullBodyDogImageProps> = ({
         }}
       >
         <div
-          className="w-full h-full flex items-center justify-center relative [&>svg]:w-full [&>svg]:h-full [&>svg]:drop-shadow-lg"
-          dangerouslySetInnerHTML={{ __html: customSvg }}
+          className="w-full h-full flex items-center justify-center relative [&>svg]:w-full [&>svg]:h-full"
+          dangerouslySetInnerHTML={{ __html: cleanedSvg }}
         />
       </div>
     );

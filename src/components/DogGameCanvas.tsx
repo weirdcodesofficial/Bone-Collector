@@ -524,10 +524,11 @@ export function DogGameCanvas({
               setCurrentAchievements(nextAch);
               onUpdateAchievements(nextAch);
 
-              // User requirement: "do not repeate the old avatar new achievement."
+              // User requirement: "generate a new breed at each trophy"
               const { nextAvatar: nextDogAvatar, updatedUsedIds } = getNextUniqueDogAvatar(
                 dogAvatarRef.current.id,
-                usedAvatarIdsRef.current
+                usedAvatarIdsRef.current,
+                nextAch
               );
               usedAvatarIdsRef.current = updatedUsedIds;
               setUsedAvatarIds(updatedUsedIds);
